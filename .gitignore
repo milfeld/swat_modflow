@@ -1,0 +1,11 @@
+# ignore compiler outputs
+*.o
+*.mod
+
+## ignore typical backup files  (Michael Klemm request)
+*~
+*.bak
+*.[0-9]
+
+## ignore working tmpdir
+*.tmpdir

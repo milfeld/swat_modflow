@@ -1,0 +1,66 @@
+#!/bin/bash
+
+list='
+readchm.f
+readgw.f
+readhru.f
+readlwq.f
+readmgt.f
+readpnd.f
+readres.f
+readrte.f
+readsdr.f
+readsepticbz.f
+readsol.f
+readsub.f
+readswq.f
+readwgn.f
+readwus.f
+'
+
+#readcnst.f
+#readtill.f
+#readswq.f
+#readpnd.f
+#readlwq.f
+#readsub.f
+#readwgn.f
+#readrte.f
+#readpest.f
+#readsno.f
+#readplant.f
+#readhru.f
+#readseptwq.f
+#readfile.f
+#readsepticbz.f
+#readurban.f
+#readbsn.f
+#readres.f
+#readmon.f
+#readwus.f
+#readfig.f
+#readru.f
+#readgw.f
+#readsol.f
+#readfcst.f
+#readyr.f
+#readatmodep.f
+#readlup.f
+#readops.f
+#readwwq.f
+#readmgt.f
+#readinpt.f
+#readfert.f
+#readchm.f
+#readsdr.f
+
+ORIG=/scratch/00770/milfeld/SWAT16/swat_modflow/SourceCode/swat/R
+DIR=/scratch/00770/milfeld/SWAT2/swat/R
+
+ for file in $list; do
+#for file in readchm.f; do
+# echo ""
+  echo "----------------                                                         working on: $file------------"
+  diff $file $DIR/$file
+# echo "------------------------------------------------------------------------------------------------------"
+done

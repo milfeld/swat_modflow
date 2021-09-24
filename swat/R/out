@@ -1,0 +1,874 @@
+ 
+                                                                         ----------- readgw.f -------------- 
+63d62
+<       use smrt_parm
+67c66
+<       real :: hlife_ngw
+---
+>       real*8 :: hlife_ngw
+114,116c113
+< 	if(mf_active.eq.0) then 
+<         gw_delaye(ihru) = Exp(-1./(delay(ihru) + 1.e-6))
+<       endif
+---
+> 	  gw_delaye(ihru) = Exp(-1./(delay(ihru) + 1.e-6))
+133c130
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readhru.f -------------- 
+102d101
+< !!    r2adjhru    |none          |retention parameter adjustment factor (=>1) !D.Moriasi 4/8/2014
+119,120c118,120
+<       real :: xm, sin_sl, epcohru, escohru
+<       real :: r2adjhru !D. Moriasi 4/4/2014    
+---
+>       real*8 :: xm, sin_sl, epcohru, escohru
+> 
+>       
+125d124
+<       r2adjhru = 0.    !D. Moriasi 4/4/2014 
+220c219,220
+<         read (108,*,iostat=eof) surlag(ihru)   
+---
+>         read (108,*,iostat=eof) surlag(ihru)
+>         if (eof < 0) exit
+222c222,238
+<         read (108,*,iostat=eof) r2adj(ihru) !Soil retention parameter D. Moriasi 4/8/2014 
+---
+>         read (108,*,iostat=eof) r2adj(ihru) !Soil retention parameter D. Moriasi 4/8/2014
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) cmn(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) cdn(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) nperco(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) phoskd(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) psp(ihru)
+>         if (eof < 0) exit 
+>         read (108,*,iostat=eof) sdnco(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) iwetile(ihru)
+>         if (eof < 0) exit
+>         read (108,*,iostat=eof) iwetgw(ihru)
+224a241,243
+>       
+>       if (iwetile(ihru) <= 0) iwetile(ihru) = 0
+>       if (iwetgw(ihru) <= 0) iwetgw(ihru) = 0
+236,240c255,262
+<       if (dep_imp(ihru) <=0.) dep_imp(ihru) = depimp_bsn
+<       if (surlag(ihru) <=0.) surlag(ihru) = surlag_bsn      
+< !     if (ddrain(ihru) <= 0.) ddrain(ihru) = 1000.
+< !     if (tdrain(ihru) <= 0.) tdrain(ihru) = 24.
+< !     if (gdrain(ihru) <= 0.) gdrain(ihru) = 96.
+---
+>       if (dep_imp(ihru) <= 0.) dep_imp(ihru) = depimp_bsn
+>       if (surlag(ihru) <= 0.) surlag(ihru) = surlag_bsn 
+>       if (cdn(ihru) <= 0.) cdn(ihru) = cdn_bsn
+>       if (nperco(ihru) <= 0.) nperco(ihru) = nperco_bsn
+>       if (cmn(ihru) <= 0.) cmn(ihru) = cmn_bsn
+>       if (phoskd(ihru) <= 0.) phoskd(ihru) = phoskd_bsn
+>       if (psp(ihru) <= 0.) psp(ihru) = psp_bsn
+>       if (sdnco(ihru) <= 0.) sdnco(ihru) = sdnco_bsn
+242a265
+>       if (r2adj(ihru) > 0.95) r2adj(ihru) = 0.95
+290c313
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+ 
+                                                                         ----------- readlwq.f -------------- 
+87,88c87,88
+<       real :: orgpi, solpi, orgni, no3i, nh3i, no2i
+<       real :: lkarea
+---
+>       real*8 :: orgpi, solpi, orgni, no3i, nh3i, no2i
+>       real*8 :: lkarea
+191c191
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readmgt.f -------------- 
+299c299
+<       integer :: eof,dum,opnum,k,cobb_model
+---
+>       integer :: eof
+303,315c303,305
+<       real :: husc, mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
+<       real :: disc
+<       integer auto_yes
+< 
+<       real,dimension(:), allocatable::cobb_phu
+<       integer,dimension(:), allocatable::cobb_mgtop
+<       real,dimension(:,:), allocatable::cobb_ops
+< 
+<       !for Fort Cobb simulation
+<       cobb_model = 5
+< 
+<       auto_yes = 0
+< 
+---
+>       real*8 :: husc, mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
+>       real*8 :: disc
+>       
+320,325d309
+<       if(ihru.eq.99) then
+<         dum = 10
+<       endif
+< 
+<       open(100009,file='auto_irrig_hrus')
+< 
+465,473d448
+<               if(auto_yes.eq.1) then
+<                 write(100009,*) ihru
+<               endif
+< 
+<               !rtb - only for Fort Cobb simulation
+<               if(cobb_model.eq.1) then
+<                 goto 4199
+<               endif
+< 
+478,483d452
+< 
+<               !rtb - only for Fort Cobb simulation
+<               if(cobb_model.eq.1) then
+<                 goto 4199
+<               endif
+< 
+500d468
+<             auto_yes = 1
+562,621d529
+<       if(auto_yes.eq.1) then
+<         write(100009,*) ihru
+<       endif
+< 
+< 
+<  4199 if(cobb_model.eq.1) then
+<       if(ihru.gt.98) then
+< 
+<       !copy for each subsequent year (temporary code - remove when done with Ft. Cobb watershed)
+<       allocate(cobb_phu(8))
+<       allocate(cobb_mgtop(8))
+<       allocate(cobb_ops(8,11)) !number of operations, number of options
+<       do n=1,(nopmx(ihru)-1)
+<         cobb_phu(n) = phu_op(n,ihru)
+<         cobb_mgtop(n) = mgtop(n,ihru)
+<         cobb_ops(n,1) = mgt1iop(n,ihru)
+<         cobb_ops(n,2) = mgt2iop(n,ihru)
+<         cobb_ops(n,3) = mgt3iop(n,ihru)
+<         cobb_ops(n,4) = mgt4op(n,ihru)
+<         cobb_ops(n,5) = mgt5op(n,ihru)
+<         cobb_ops(n,6) = mgt6op(n,ihru)
+<         cobb_ops(n,7) = mgt7op(n,ihru)
+<         cobb_ops(n,8) = mgt8op(n,ihru)
+<         cobb_ops(n,9) = mgt9op(n,ihru)
+<         cobb_ops(n,10) = mgt10iop(n,ihru)
+<       enddo
+<         
+<       !copy for the number of subsequent years in the simulation
+<       opnum = nopmx(ihru)
+<       do n=1,2
+<         do k=1,(nopmx(ihru)-1)
+<           phu_op(opnum,ihru) = cobb_phu(k)
+<           mgtop(opnum,ihru) = cobb_mgtop(k) 
+<           if(mgtop(opnum,ihru) == 1) then
+<             idplt(ihru) = mgt1i
+<             icrmx(ihru) = icrmx(ihru) + 1
+<             idplrot(icrmx(ihru),ihru) = mgt1i
+<             mcrhru(ihru) = mcrhru(ihru) + 1
+<           endif
+<           mgt1iop(opnum,ihru) = cobb_ops(k,1)
+<           mgt2iop(opnum,ihru) = cobb_ops(k,2)
+<           mgt3iop(opnum,ihru) = cobb_ops(k,3)
+<           mgt4op(opnum,ihru) = cobb_ops(k,4)
+<           mgt5op(opnum,ihru) = cobb_ops(k,5)
+<           mgt6op(opnum,ihru) = cobb_ops(k,6)
+<           mgt7op(opnum,ihru) = cobb_ops(k,7)
+<           mgt8op(opnum,ihru) = cobb_ops(k,8)
+<           mgt9op(opnum,ihru) = cobb_ops(k,9)
+<           mgt10iop(opnum,ihru) = cobb_ops(k,10)
+<           opnum = opnum + 1
+<         enddo
+<       enddo
+< 
+<       !set the last operation as 'skip'
+<       mgtop(opnum,ihru) = 17
+< 
+<       endif
+<       endif
+<       
+< 
+626c534,535
+<       end
+\ No newline at end of file
+---
+> 
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+ 
+                                                                         ----------- readpnd.f -------------- 
+166a167
+>       use io
+171,176c172,177
+<       real :: spndfr, spndpsa, spndpv, spndesa, spndev, spndv, spnds
+<       real :: spndns, spndk, swetfr, swetnsa, swetnv, swetmsa, sp1
+<       real :: swetmv, swetv, swets, swetns, swetk, sp2, sw1, sw2
+<       real :: sn1, sn2, snw1, snw2, schla, schlaw, sseci, sseciw
+<       real :: spno3, spsolp, sporgn, sporgp, swno3, swsolp, sworgn
+<       real :: sworgp, sub_ha, velsetlpnd
+---
+>       real*8 :: spndfr, spndpsa, spndpv, spndesa, spndev, spndv, spnds
+>       real*8 :: spndns, spndk, swetfr, swetnsa, swetnv, swetmsa, sp1
+>       real*8 :: swetmv, swetv, swets, swetns, swetk, sp2, sw1, sw2
+>       real*8 :: sn1, sn2, snw1, snw2, schla, schlaw, sseci, sseciw
+>       real*8 :: spno3, spsolp, sporgn, sporgp, swno3, swsolp, sworgn
+>       real*8 :: sworgp, sub_ha, velsetlpnd
+348a350,353
+>       if (eof < 0) exit
+>       read (104,*,iostat=eof) titldum
+>       if (eof < 0) exit
+>       read (104,5101,iostat=eof) lid_file
+349a355,356
+>       exit
+>       end do
+353,408c360,417
+<       open (104,file=dpd_file)
+<       read (104,5100,iostat=eof) titldum
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_onoff(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_imo(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_iyr(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_evrsv(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_numweir(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_numstage(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_lwratio(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_totwrwid(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_stagdis(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_reltype(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_intcept(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_expont(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_coef1(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_coef2(i)
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) dtp_coef3(i)
+<       if (eof < 0) exit
+< 
+<       read (104,*,iostat=eof) (dtp_weirtype(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit 
+<       read (104,*,iostat=eof) (dtp_weirdim(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_wdratio(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_depweir(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_diaweir(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_addon(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_flowrate(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_cdis(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_retperd(i,k),k=1,dtp_numstage(i))
+<       if (eof < 0) exit
+<       read (104,*,iostat=eof) (dtp_pcpret(i,k),k=1,dtp_numstage(i))   
+<       if (eof < 0) exit
+<       close (104)
+<       else
+---
+>         open (104,file=data_dir//dpd_file)
+>         do
+>         read (104,5100,iostat=eof) titldum
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_onoff(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_imo(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_iyr(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_evrsv(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_numweir(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_numstage(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_lwratio(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_totwrwid(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_stagdis(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_reltype(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_intcept(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_expont(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_coef1(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_coef2(i)
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) dtp_coef3(i)
+>         if (eof < 0) exit
+> 
+>         read (104,*,iostat=eof) (dtp_weirtype(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit 
+>         read (104,*,iostat=eof) (dtp_weirdim(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_wdratio(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_depweir(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_diaweir(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_addon(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_flowrate(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_cdis(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_retperd(i,k),k=1,dtp_numstage(i))
+>         if (eof < 0) exit
+>         read (104,*,iostat=eof) (dtp_pcpret(i,k),k=1,dtp_numstage(i))   
+>         if (eof < 0) exit
+>         exit
+>         end do
+>         close (104)
+415c424,425
+<       open (104,file=wpd_file)
+---
+>       open (104,file=data_dir//wpd_file)
+>       do
+471a482,483
+>       exit
+>       end do
+473d484
+<       else
+481c492,493
+<       open (104,file=rib_file)
+---
+>       open (104,file=data_dir//rib_file)
+>       do
+525c537,538
+<       else
+---
+>       exit
+>       end do
+531c544,545
+<       open (104,file=sfb_file)
+---
+>       open (104,file=data_dir//sfb_file)
+>       do
+568c582,583
+<       else
+---
+>       exit
+>       end do
+572a588,676
+> 
+>       !! LIDs (.lid file)
+>       !! LIDs (green roof, rain garden, cistern, and porous pavement) 
+>       if (lid_file /= '             '.and. ievent > 0) then     
+>       open (104,file=data_dir//lid_file)
+>       do
+>       read (104,5100,iostat=eof) titldum
+>       read (104,5100,iostat=eof) titldum
+>       if (eof < 0) exit
+>       !! Green Roof (gr)
+>       read (104,*,iostat=eof) (gr_onoff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_imo(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_iyr(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_farea(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_solop(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_etcoef(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_fc(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_wp(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_ksat(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_por(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_hydeff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_soldpt(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_dummy1(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_dummy2(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_dummy3(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_dummy4(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (gr_dummy5(i,k),k=1,mudb)
+>       if (eof < 0) exit
+>       !! Rain Garden (rg)
+>       read (104,*,iostat=eof) (rg_onoff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_imo(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_iyr(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_farea(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_solop(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_etcoef(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_fc(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_wp(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_ksat(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_por(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_hydeff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_soldpt(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dimop(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_sarea(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_vol(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_sth(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_sdia(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_bdia(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_sts(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_orifice(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_oheight(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_odia(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dummy1(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dummy2(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dummy3(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dummy4(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (rg_dummy5(i,k),k=1,mudb)
+>       !! CiStern (CS)
+>       read (104,*,iostat=eof) (cs_onoff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_imo(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_iyr(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_grcon(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_farea(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_vol(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_rdepth(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_dummy1(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_dummy2(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_dummy3(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_dummy4(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (cs_dummy5(i,k),k=1,mudb)
+>       !! Porous paVement (PV)
+>       read (104,*,iostat=eof) (pv_onoff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_imo(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_iyr(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_farea(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_grvdep(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_grvpor(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_solop(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_drcoef(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_fc(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_wp(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_ksat(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_por(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_hydeff(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_dummy1(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_dummy2(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_dummy3(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_dummy4(i,k),k=1,mudb)
+>       read (104,*,iostat=eof) (pv_dummy5(i,k),k=1,mudb)
+>       close (104)
+574a679,682
+>       endif
+> !! end .lid file
+> 
+> 
+662,663c770,774
+<       if (ievent > 0) call bmpinit
+<       
+---
+>       if (ievent > 0) then
+>         call bmpinit
+>         call lidinit
+>       endif
+>             
+667c778
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readres.f -------------- 
+114a115
+>       use io
+119c120
+<       real :: resdif, targ, lnvol, res_d50
+---
+>       real*8 :: resdif, targ, lnvol, res_d50
+222a224,226
+> !! code added for C. Ikenberry to swicth from new (1) to old (0) equations in resnut.f
+>         read (105,*,iostat=eof) ires_nut
+>         if (eof < 0) exit
+286c290
+<         open (350+i,file=resdayo)
+---
+>         open (350+i,file=data_dir//resdayo)
+330c334
+<         open (101,file=resmono)
+---
+>         open (101,file=data_dir//resmono)
+348c352
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readrte.f -------------- 
+44c44
+< !!    ch_eqn        |            |sediment routine methods: 
+---
+> !!    ch_eqn        |            |sediment routine methods (DAILY): 
+89c89
+< 	  real :: bnksize, bedsize
+---
+> 	  real*8 :: bnksize, bedsize
+113,114c113,114
+< 	  read (103,*,iostat=eof) chside(irch)
+< 	  if (eof < 0) exit
+---
+>       read (103,*,iostat=eof) chside(irch)
+>       if (eof < 0) exit
+116,118c116,118
+< 	  if (eof < 0) exit
+< 	  read (103,*,iostat=eof) ch_bed_bd(irch)
+< 	  if (eof < 0) exit
+---
+>       if (eof < 0) exit
+>       read (103,*,iostat=eof) ch_bed_bd(irch)
+>       if (eof < 0) exit
+120c120
+< 	  if (eof < 0) exit
+---
+>       if (eof < 0) exit
+122c122
+< 	  if (eof < 0) exit
+---
+>       if (eof < 0) exit
+124c124
+< 	  if (eof < 0) exit
+---
+>       if (eof < 0) exit
+126,130c126,130
+< 	  if (eof < 0) exit
+< 	  read (103,5000,iostat=eof) tc_bnk(irch)
+< 	  if (eof < 0) exit
+< 	  read (103,5000,iostat=eof) tc_bed(irch)
+< 	  if (eof < 0) exit
+---
+>       if (eof < 0) exit
+>       read (103,5000,iostat=eof) tc_bnk(irch)
+>       if (eof < 0) exit
+>       read (103,5000,iostat=eof) tc_bed(irch)
+>       if (eof < 0) exit
+132,135c132,140
+< 	  if (eof < 0) exit
+< 	  read (103,*,iostat=eof) ch_eqn(irch)
+<         if (eof < 0) exit
+< 	  read (103,*,iostat=eof) prf(irch)
+---
+>       if (eof < 0) exit
+>       read (103,*,iostat=eof) ch_eqn(irch)
+>       if (eof < 0) exit
+>       read (103,*,iostat=eof) prf(irch)
+>       if (eof < 0) exit
+>       read (103,*,iostat=eof) spcon(irch)
+>       if (eof < 0) exit
+>       read (103,*,iostat=eof) spexp(irch)
+>       if (eof < 0) exit
+150a156,157
+>       if (spcon(irch) <= 0.) spcon(irch) = spcon_bsn
+>       if (spexp(irch) <= 0.) spexp(irch) = spexp_bsn
+316c323
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+ 
+                                                                         ----------- readsdr.f -------------- 
+74c74
+< 	real :: mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
+---
+> 	real*8 :: mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
+99c99
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readsepticbz.f -------------- 
+144c144
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readseptwq.f -------------- 
+64a65
+>       use io
+73,74c74,75
+<       real :: sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,sptno3conc
+<       real :: sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
+---
+>       real*8 :: sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,sptno3conc
+>       real*8 :: sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
+81c82
+<         open (171,file=septdb)
+---
+>         open (171,file=conf_dir//septdb)
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+ 
+                                                                         ----------- readsol.f -------------- 
+72c72
+< !!    Exp, Abs
+---
+> !!    Exp, abs
+81,82c81,83
+< !      real :: xx, plt_zmx, yy
+<       real :: plt_zmx                   !Claire, xx and yy are not used 12/2/09
+---
+> !      real*8 :: xx, plt_zmx, yy
+>       real*8 :: plt_zmx                   !Claire, xx and yy are not used 12/2/09
+>       real*8 :: dep_new
+121c122
+< !    change below double subscripted sol_ec statement 1/27/09 when making septic changes
+---
+> !    change double subscripted sol_ec statement 1/27/09 when making septic changes
+123,129d123
+< !    change below double subscripted sol_ec statement 1/27/09 when making septic changes
+< 
+<       !! MJW added rev 490
+< 	!!CaCo3 content (%) 
+< 	if (eof < 0) exit	
+< 	  read (107,5000,iostat=eof) (sol_cal(j,ihru), j = 1, nly) 	
+< 	!! PH-H20  
+130a125,128
+> !    change double subscripted sol_ec statement 1/27/09 when making septic changes
+> 
+>       !! MJW added rev 490      
+>       !! PH-H20 
+132,133c130,135
+<       
+<       if (eof < 0) exit
+---
+>         if (eof < 0) exit
+>         
+> 	!!CaCo3 content (%) 	
+> 	  read (107,5000,iostat=eof) (sol_cal(j,ihru), j = 1, nly) 	
+> 	  if (eof < 0) exit
+> 
+275c277
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readsub.f -------------- 
+134a135
+>       use io
+141c142
+<       real :: ssnoeb(10), sno_sub, ch_ls, sumebfr
+---
+>       real*8 :: ssnoeb(10), sno_sub, ch_ls, sumebfr
+157c158
+<       if (isproj == 2) then
+---
+>       if (isproj == 3) then
+180c181
+<         open (114,file=wgnfile)
+---
+>         open (114,file=data_dir//wgnfile)
+201c202
+<         open (104,file=pndfile)
+---
+>         open (104,file=data_dir//pndfile)
+205c206
+<         open (105,file=wusfile)
+---
+>         open (105,file=data_dir//wusfile)
+210c211
+<             open (113,file=snofile)
+---
+>             open (113,file=data_dir//snofile)
+269c270
+<             open (172,file=septfile, status='old')
+---
+>             open (172,file=data_dir//septfile, status='old')
+275c276
+< 	      open (112,file=sdrfile)
+---
+> 	      open (112,file=data_dir//sdrfile)
+276a278,286
+>             if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn   !! todd campbell 06/07/18
+>           else
+>             if (re(ihru) <= 0.) re(ihru) = re_bsn
+>             if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
+>             if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
+>             if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
+>             if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn	
+>             if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
+>  !           sdrain(ihru) = 0.      !!!! nbs 11/25/15
+279,283c289,293
+<           open (106,file=chmfile)
+<           open (107,file=solfile)
+<           open (108,file=hrufile)
+<           open (109,file=mgtfile)
+<           open (110,file=gwfile)
+---
+>           open (106,file=data_dir//chmfile)
+>           open (107,file=data_dir//solfile)
+>           open (108,file=data_dir//hrufile)
+>           open (109,file=data_dir//mgtfile)
+>           open (110,file=data_dir//gwfile)
+291c301
+<             open (111,file=opsfile)
+---
+>             open (111,file=data_dir//opsfile)
+371,379c381,383
+<       
+< !!  routing changes gsm per jga 5/3/2010
+< !!      irunits = 0
+< !!      read (101,*,iostat=eof) titldum
+< !!      read (101,*,iostat=eof) irunits
+< !!     if (irunits = = 1) then
+< !!        call readfig_sub
+< !!      endif
+<       
+---
+> 
+> !! commented the following statements and moved above in the 'else'
+> !! where it reads the sdrfile.  Jeff should check. 
+381,388c385,393
+<       do ihru = jj, hrutot(i)
+<         if (re(ihru) <= 0.) re(ihru) = re_bsn
+< 	  if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
+< 	  if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
+< 	  if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
+<         if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn	
+< 	  if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
+<       end do
+---
+> !      do ihru = jj, hrutot(i)
+> !        if (re(ihru) <= 0.) re(ihru) = re_bsn
+> !	  if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
+> !	  if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
+> !	  if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
+> !        if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn	
+> !	  if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
+> !     end do
+> 
+472c477
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readswq.f -------------- 
+219c219
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+
+ 
+                                                                         ----------- readurban.f -------------- 
+64,65c64,65
+<       real :: fimpu, fcimpu, crbdn, ucoef, dtmx, thlf, tncnc, tpcnc
+<       real :: tno3cnc
+---
+>       real*8 :: fimpu, fcimpu, crbdn, ucoef, dtmx, thlf, tncnc, tpcnc
+>       real*8 :: tno3cnc
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readwgn.f -------------- 
+126c126
+< !!    Intrinsic: Sin, Cos, Tan, Abs, Acos, Log, Exp, MaxVal
+---
+> !!    Intrinsic: Sin, Cos, Tan, abs, Acos, Log, Exp, MaxVal
+134,137c134,137
+<       real :: xx, lattan, x1, x2, x3, tav, tmin, tmax, rain_yrs
+<       real :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp
+<       real, dimension (12) :: rainhhmx, rain_hhsm, pcpmm, pcpd
+<       real :: tmpsoil, sffc, rndm1, dl
+---
+>       real*8 :: xx, lattan, x1, x2, x3, tav, tmin, tmax, rain_yrs
+>       real*8 :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp
+>       real*8, dimension (12) :: rainhhmx, rain_hhsm, pcpmm, pcpd
+>       real*8 :: tmpsoil, sffc, rndm1, dl
+186c186
+< !!       absolute value is taken of tan(lat) to convert southern hemisphere
+---
+> !!       dabsolute value is taken of tan(lat) to convert southern hemisphere
+190c190
+<       x1 = .4348 * Abs(lattan)      
+---
+>       x1 = .4348 * abs(lattan)      
+198c198
+<          if (Abs(sub_lat(i)) > 40.) then
+---
+>          if (abs(sub_lat(i)) > 40.) then
+200c200
+<          else if (Abs(sub_lat(i)) < 20.) then
+---
+>          else if (abs(sub_lat(i)) < 20.) then
+203c203
+<          dl = (Abs(sub_lat(i)) - 20.) / 20.
+---
+>          dl = (abs(sub_lat(i)) - 20.) / 20.
+357c357
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readwus.f -------------- 
+42c42
+<       real :: swupnd(12), swush(12), swudp(12)
+---
+>       real*8 :: swupnd(12), swush(12), swudp(12)
+89c89
+<       end
+\ No newline at end of file
+---
+>       end
+-------------------------------------------------_-----------------------------------------------------
+ 
+ 
+                                                                         ----------- readwwq.f -------------- 
+28a29
+> !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing

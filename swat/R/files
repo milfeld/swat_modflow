@@ -1,0 +1,50 @@
+#!/bin/bash
+
+list='
+readatmodep.f
+readbsn.f
+readchm.f
+readcnst.f
+readfcst.f
+readfert.f
+readfig.f
+readfile.f
+readgw.f
+readhru.f
+readinpt.f
+readlup.f
+readlwq.f
+readmgt.f
+readmon.f
+readops.f
+readpest.f
+readplant.f
+readpnd.f
+readres.f
+readrte.f
+readru.f
+readsdr.f
+readsepticbz.f
+readseptwq.f
+readsno.f
+readsol.f
+readsub.f
+readswq.f
+readtill.f
+readurban.f
+readwgn.f
+readwus.f
+readwwq.f
+readyr.f
+'
+
+for i in $list; do
+#echo $i
+#dos2unix $i
+# ls /scratch/00770/milfeld/SWAT2/swat/R/$i
+  echo " "
+  echo " "
+  echo "                                                                         ----------- $i -------------- "
+  diff $i /scratch/00770/milfeld/SWAT2/swat/R/$i
+  echo "-------------------------------------------------_-----------------------------------------------------"
+done
