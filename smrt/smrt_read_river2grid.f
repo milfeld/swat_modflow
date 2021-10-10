@@ -40,6 +40,7 @@
 !     Import variables
       use GLOBAL, only:LENUNI,ITMUNI !MODFLOW
       use smrt_parm !smrt linkage
+      use io, only: data_swatmf
       implicit none
       
 !     Initialize local variables
@@ -47,7 +48,7 @@
       
 !     Read in the id and percent area of each SWAT HRU contributing to each
 !     MODFLOW grid
-      open (6005,file="swatmf_river2grid.txt")
+      open (6005,file=data_swatmf//"swatmf_river2grid.txt")
       print *, 'Reading Subbasin to Grid mapping...'
       print *
 

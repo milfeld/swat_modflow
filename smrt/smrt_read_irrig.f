@@ -21,6 +21,7 @@
       use parm
       use smrt_parm !smrt linkage
       use GLOBAL,only:NROW,NCOL,NLAY !MODFLOW
+      use io, only: data_swatmf, data_out
 
       implicit none
       
@@ -32,7 +33,7 @@
       print *, 'Reading MODFLOW Cells that provide Irrigation Water...'
 
       !open the file and read in number of MODFLOW cells that provide irrigation to SWAT
-      open (6006,file="swatmf_irrigate.txt")
+      open (6006,file=data_swatmf//"swatmf_irrigate.txt")
       read(6006,*)
       read(6006,*) ncell_irrigate
       
@@ -108,13 +109,13 @@
 
       !open up files for pumped irrigation output (filled up in 'smrt_conversion2swat.f')
       if(mf_irrigation_swat.eq.0) then
-        open(300009,file='swatmf_out_pumped_sub')
+        open(300009,file=data_out//'swatmf_out_pumped_sub')
         write(300009,*) 'MODFLOW Pumped, SWAT Received'
-        open(300010,file='swatmf_out_pumped_hru')
+        open(300010,file=data_out//'swatmf_out_pumped_hru')
         write(300010,*) 'MODFLOW pumped groundwater applied to HRUs'
       else
         !open up files for pumping rates specified by SWAT HRUs (auto-irrigation)
-        open(300011,file='swatmf_out_pumping')
+        open(300011,file=data_out//'swatmf_out_pumping')
         write(300011,*) 'MODFLOW Pump Rates specified by AutoIrrigation'
         write(300011,*) 'Units: according to ITMUNI and LENUNI in .dis'
       endif

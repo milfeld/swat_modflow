@@ -9,13 +9,14 @@
 !     Import variables
       use GLOBAL, only:LENUNI,ITMUNI,NROW,NCOL !MODFLOW
       use smrt_parm !smrt linkage
+      use io, only: data_swatmf
       implicit none
       
 !     Initialize local variables
       integer i,drn_row,drn_col,sub_basin     
       
 !     Read in row, column, and associated sub-basin for each DRAIN cell
-      open (6007,file="swatmf_drain2sub.txt")
+      open (6007,file=data_swatmf//"swatmf_drain2sub.txt")
       print *, 'Reading Drain to Subbasin Mapping...'
       print *
       read(6007,*) ndrn_subs ! # of MODLFOW drain cells in the SWAT domain

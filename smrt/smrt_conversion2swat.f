@@ -94,6 +94,7 @@
       use mf_rt_link, only: rt_active,rt_rivmass,rt_drnmass !MODFLOW-RT3D Linkage
       use rt_global, only: CNEW !RT3D
       use smrt_parm !smrt linkage
+      use io, only: data_swatmf, data_out
       implicit none
       
 !     define local variables
@@ -174,7 +175,7 @@
 
       !print out the area (km2) of each subbasin, for the first day of the simulation
       if(area_print.eq.1) then
-        open(99999,file='sub_km')
+        open(99999,file=data_out//'sub_km')
         do i=1,msub
           write(99999,*) sub_km(i)
         enddo
@@ -402,7 +403,7 @@
       if(IUNIT(18).GT.0) then
 
         !loop through stream segments that discharge water to SWAT sub-basins
-        open(88889,file='swatmf_str2sub.txt')
+        open(88889,file=data_swatmf//'swatmf_str2sub.txt')
         read(88889,*) nstrm_swat
         read(88889,*)
         do i=1,nstrm_swat

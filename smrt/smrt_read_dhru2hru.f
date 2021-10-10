@@ -29,6 +29,7 @@
 
 !     Import variables
       use smrt_parm
+      use io, only: data_swatmf
       implicit none
       
 !     Initialize local variables
@@ -36,7 +37,7 @@
 
 
       !open the input file containing the HRU --> DHRU mapping data
-      open (6003,file="swatmf_dhru2hru.txt")
+      open (6003,file=data_swatmf//"swatmf_dhru2hru.txt")
       print *, 'Reading DHRU to HRU mapping...'
 
       !The first line of this file is the total number of HRUs in the watershed (ie, how many will be read in)

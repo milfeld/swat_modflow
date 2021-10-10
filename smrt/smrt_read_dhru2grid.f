@@ -31,6 +31,7 @@
 !     Import variables
       use GLOBAL, only: NCOL,NROW,NLAY !MODFLOW
       use smrt_parm
+      use io, only: data_swatmf
       implicit none
       
       !Initialize local variables
@@ -38,7 +39,7 @@
       
 
       !The first line of this file is the total number of MODFLOW grids (active and inactive) = NROW * NCOL
-      open (6002,file="swatmf_dhru2grid.txt")
+      open (6002,file=data_swatmf//"swatmf_dhru2grid.txt")
       print *, 'Reading DHRU to Grid mapping...'
       
       !The first line of this file is the total number of MODFLOW grid cells (ie, how many will be read in)

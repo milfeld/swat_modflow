@@ -33,6 +33,7 @@
 !     Import variables
       use GLOBAL, only: NCOL, NROW, NLAY !MODFLOW
       use smrt_parm !SWAT-MODFLOW linkage
+      use io, only: data_swatmf
       implicit none
       
       !Initialize local variables
@@ -40,7 +41,7 @@
 
 
       !Read in the ID and percent area of each MODFLOW grid contributing to each SWAT-MODFLOW dhru
-      open (6004,file="swatmf_grid2dhru.txt")
+      open (6004,file=data_swatmf//"swatmf_grid2dhru.txt")
       print *, 'Reading Grid to DHRU mapping...'
 
       !The first line of this file is the total number of DHRUs in the watershed (ie, how many will be read in)
