@@ -110,6 +110,7 @@
 
 
       use parm
+      use io
 
       character (len=80) :: titldum
       character (len=1) ::  a
@@ -197,7 +198,7 @@
               i = 0
               i = inum1s(idum)
               subed(ihouts(idum)) = inum4s(idum)
-              open (101,file=subfile)
+              open (101,file=data_sub//subfile)
               call readsub
               nhru = nhru + hrutot(i)
 
@@ -214,8 +215,8 @@
               call caps(swqfile)
               irch = 0
               irch = inum1s(idum)
-              open (103,file=rtefile)
-              open (104,file=swqfile)
+              open (103,file=data_rte//rtefile)
+              open (104,file=data_swq//swqfile)
               call readrte
               call readswq
 
@@ -228,10 +229,10 @@
               call caps(lwqfile)
               i = 0
               i = inum1s(idum)
-              open (105,file=resfile)
+              open (105,file=data_res//resfile)
               call readres
               if (lwqfile /= '             ') then
-                open (106,file=lwqfile)
+                open (106,file=data_lwq//lwqfile)
                 call readlwq
               end if
             !! lake water quality default values
@@ -247,7 +248,7 @@
               hour_in = ""
               read (102,5100) hour_in
               call caps(hour_in)
-              open (200+inum1s(idum),file=hour_in,recl=350)
+              open (200+inum1s(idum),file=data_swat//hour_in,recl=350)
               do ii = 1, 6
                 read (200+inum1s(idum),5200) titldum
               end do
@@ -260,7 +261,7 @@
             call caps(month_in)
             i = 0
             i = inum1s(idum)
-            open (107,file=month_in,recl=350)
+            open (107,file=data_swat//month_in,recl=350)
             call readmon
             
             case (8)  !! icode = 8  RECYEAR command: 
@@ -271,7 +272,7 @@
             call caps(year_in)
             i = 0
             i = inum1s(idum)
-            open (108,file=year_in,recl=350)
+            open (108,file=data_swat//year_in,recl=350)
             call readyr
 
             close (108)
@@ -283,7 +284,7 @@
               read (102,5100) day_in
               call caps(day_in)
               if (inum1s(idum) <= 10 .and. inum1s(idum) > 0) then
-                open (40+inum1s(idum),file=day_in,recl=350)
+                open (40+inum1s(idum),file=data_swat//day_in,recl=350)
                 if (inum3s(idum) == 0) then
                   write (40+inum1s(idum),5400) title
                   write (40+inum1s(idum),5500)
@@ -301,7 +302,7 @@
               day_in = ""
               read (102,5100) day_in
               call caps(day_in)
-              open (555+inum1s(idum),file=day_in,recl=350)
+              open (555+inum1s(idum),file=data_swat//day_in,recl=350)
               do ii = 1, 6
                 read (555+inum1s(idum),5200) titldum
               end do
@@ -315,7 +316,7 @@
             call caps(annual_in)
             i = 0
             i = inum1s(idum)
-            open (109,file=annual_in,recl=350)
+            open (109,file=data_swat//annual_in,recl=350)
             call readcnst
 
 !! code to read from apex output file
@@ -325,7 +326,7 @@
 	      call caps(apex_in)
       !      i = 0
       !      i = inum1s(idum)
-            open (112+inum1s(idum),file=apex_in,recl=350)
+            open (112+inum1s(idum),file=data_swat//apex_in,recl=350)
 	      do ii = 1, 9 
               read (112+inum1s(idum),5200) titldum
             end do
@@ -340,7 +341,7 @@
               read (102,5100) day_in
               call caps(day_in)
               if (inum1s(idum) <= 50 .and. inum1s(idum) > 0) then
-                open (50+inum1s(idum),file=day_in,recl=350)
+                open (50+inum1s(idum),file=data_swat//day_in,recl=350)
                 write (50+inum1s(idum),5400) title
                 write (50+inum1s(idum),5600)
               end if
@@ -352,7 +353,7 @@
               iru = inum1s(idum)
               isub = inum2s(idum)
               daru_km(isub,iru) = rnum1s(idum)
-              open (113,file=rufile)
+              open (113,file=data_swat//rufile)
               call readru
               close(113)
               

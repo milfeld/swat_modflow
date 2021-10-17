@@ -62,7 +62,8 @@
 !!     of septic documentation. Data were compiled from Siegrist et al, 2005 and McCray et al,2007. 
      
       use parm
-      
+      use io, only: data_swat 
+
       character* 4 sptnames(50)
       character*4 sptname
       character*80 titlesep
@@ -78,7 +79,7 @@
 
 !!    septic database filename present in file.cio
       if (septdb /= '             ') then
-        open (171,file=septdb)
+        open (171,file=data_swat//septdb)
 	
 
 !!    read title lines

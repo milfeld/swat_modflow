@@ -93,6 +93,7 @@
 
 
       use parm
+      use io, only: data_swat
 
       character (len=13) :: urbandb, plantdb, tilldb, pestdb, figfile,  
      &                      fertdb, subfile, fcstfile, bsnfile
@@ -130,7 +131,7 @@
       computenutr = .true. !aqd
       initializeRCHloss = .true. !tcw
 
-      open (23,file="file.cio")
+      open (23,file=data_swat//"file.cio")
       read (23,6000) titldum
       read (23,6000) titldum
       read (23,5100) title
@@ -219,7 +220,7 @@
       call caps(septdb)  !! CS
 
 !! open .bsn file to get ievent input
-      open (103,file=bsnfile)
+      open (103,file=data_swat//bsnfile)
       call caps (bsnfile)
       do nlines = 1, 17
         read (103,6000,iostat=eof) titldum
@@ -267,7 +268,7 @@
 !! calculate number of records in plant growth database
       eof = 0
       mcrdb = 0
-      open (29,file=plantdb)
+      open (29,file=data_swat//plantdb)
       do
         ic = 0
         read (29,*,iostat=eof) ic
@@ -288,7 +289,7 @@
 !! calculate number of records in urban database
       eof = 0
       mudb = 0
-      open (8,file=urbandb)
+      open (8,file=data_swat//urbandb)
       do
         iunum = 0
         read (8,6200,iostat=eof) iunum
@@ -307,7 +308,7 @@
 !!    read title lines from septic database file
 !     septic database
       if (septdb /= '             ') then
-         open (171,file=septdb) !! CS
+         open (171,file=data_swat//septdb) !! CS
          do jj = 1,4
             read (171,6000) titldum
          end do
@@ -327,7 +328,7 @@
 !! calculate number of records in fertilizer database
       eof = 0
       mfdb = 0
-      open (7,file=fertdb)
+      open (7,file=data_swat//fertdb)
       do
         ifnum = 0
         read (7,6300,iostat=eof) ifnum
@@ -340,7 +341,7 @@
 !! calculate number of records in pesticide database
       eof = 0
       mpdb = 0
-      open (31,file=pestdb)
+      open (31,file=data_swat//pestdb)
       do
         ipnum = 0
         read (31,6200,iostat=eof) ipnum
@@ -353,7 +354,7 @@
 !! calculate number of records in tillage database
       eof = 0
       mtil = 0
-      open (30,file=tilldb)
+      open (30,file=data_swat//tilldb)
       do
         itnum = 0
         read (30,6300,iostat=eof) itnum
@@ -368,7 +369,7 @@
       allocate (pstflg(mpdb))
       pstflg = 0
       mhru1 = 1
-      open (27,file=figfile)
+      open (27,file=data_swat//figfile)
       do while (icd > 0)
         read (27,5002) a
         if (a /= "*") then
@@ -384,7 +385,7 @@
             numhru = 0
             read (27,6100) subfile
             call caps(subfile)
-            open (25,file=subfile)
+            open (25,file=data_swat//subfile)
             do j = 1,52 
               read (25,6000) titldum
             end do
@@ -490,7 +491,7 @@
       call caps(fcstfile)
       if (fcstfile /= '             ') then
         fcsttot = 0
-        open (12,file=fcstfile)
+        open (12,file=data_swat//fcstfile)
         read (12,5002,end=99) titldum
 
         read (12,6400) fcsttot

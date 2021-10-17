@@ -119,6 +119,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use io, only: data_swat, data_out
 
       character (len=13) :: figfile, bsnfile, plantdb, tilldb, urbandb, 
      &    pestdb, fertdb, fcstfile
@@ -138,7 +139,7 @@
       urbandb = ""
       septdb = ""   !!SEPTIC CHANGES GSM 1/30/09
 
-      open (101,file="file.cio")
+      open (101,file=data_swat//"file.cio")
 
 !! Read project description
       read (101,5101) titldum
@@ -154,7 +155,7 @@
       read (101,*) idal
 
       call caps(figfile)
-      open (102,file=figfile)
+      open (102,file=data_swat//figfile)
 
 !! Read climate information
       read (101,5101) titldum
@@ -192,7 +193,7 @@
       if (idt > 0) nstep = 1440 / idt
 !!    added air and soil temperature file for carbon
 !!    can be commented if needed by user
-!     open (120, file='air_soil.out')
+!     open (120, file=data_out//'air_soil.out')
 !     write (120,12111)
 !12111  format ('  Day','  Hru','  Tmax','   Tmin','   Soil Temp for
 !     & Soil Layers')
@@ -241,7 +242,7 @@
 
       call caps(fcstfile)
       if (fcstfile /= '             ') then 
-        open (109,file=fcstfile)
+        open (109,file=data_swat//fcstfile)
       else
         fcstyr = 0
         fcstday = 0
@@ -252,7 +253,7 @@
       read (101,5000) bsnfile
 
       call caps(bsnfile)
-      open (103,file=bsnfile)
+      open (103,file=data_swat//bsnfile)
 
 !!Open database files
       read (101,5101) titldum
@@ -267,11 +268,11 @@
       call caps(pestdb)
       call caps(fertdb)
       call caps(urbandb)
-      open (104,file=plantdb)
-      open (105,file=tilldb)
-      open (106,file=pestdb)
-      open (107,file=fertdb)
-      open (108,file=urbandb)
+      open (104,file=data_swat//plantdb)
+      open (105,file=data_swat//tilldb)
+      open (106,file=data_swat//pestdb)
+      open (107,file=data_swat//fertdb)
+      open (108,file=data_swat//urbandb)
 	
 
 !!Special Projects input
@@ -490,7 +491,7 @@
       isol = 0
       read (101,*,iostat=eof) isol  
       if (isol == 1) then
-         open (121,file='output.snu')
+         open (121,file=data_out//'output.snu')
          write (121,12222) 
 12222   format (t25,'SURFACE',t39,'-------  SOIL PROFILE  -------',/, 
      &  t8,'DAY',t15,'GISnum',t25,'SOL_RSD',t37,'SOL_P',t48,            
@@ -511,7 +512,7 @@
 !!	end do
 
 !!    read from readlup (landuse update file)
-       open (122,file='lup.dat')
+       open (122,file=data_swat//'lup.dat')
                       
 !!    added for binary files 3/25/09 gsm 
 !!    ia_b  print ascii or binary files
@@ -535,7 +536,7 @@
 !!    output by elevation band to (formerly 'snowband.out')
       read (101,*,iostat=eof) isnow
 	if (isnow == 1) then
-         open (115,file='output.snw')
+         open (115,file=data_out//'output.snw')
          write (115,1010)
       end if
 
@@ -599,26 +600,26 @@
       end if
 
       !!Open output files
-      open (24,file="input.std")
-      open (26,file="output.std")
+      open (24,file=data_swat//"input.std")
+      open (26,file=data_out//"output.std")
 
-      open (28,file="output.hru",recl=1500)
+      open (28,file=data_out//"output.hru",recl=1500)
       if (ia_b == 1) then 
-        open (33333,file="outputb.hru",form='unformatted')
+        open (33333,file=data_out//"outputb.hru",form='unformatted')
       end if
-      open (30,file="output.pst",recl=600)
+      open (30,file=data_out//"output.pst",recl=600)
       open (31,file="output.sub",recl=600)
       if (ia_b == 1) then
-        open (66666,file = "outputb.sub", form = 'unformatted')
+        open (66666,file = data_out//"outputb.sub", form = 'unformatted')
       end if
-      open (7,file="output.rch",recl=800)
-      open (8,file="output.rsv",recl=800)
+      open (7,file=data_out//"output.rch",recl=800)
+      open (8,file=data_out//"output.rsv",recl=800)
       if (ia_b == 1) then
-        open (77777,file = "outputb.rch", form = 'unformatted')
+        open (77777,file = data_out//"outputb.rch", form = 'unformatted')
       end if
       
 !!    sediment routing output file
-      open (84,file="output.sed",recl=800)
+      open (84,file=data_out//"output.sed",recl=800)
 !! write headings to sediment outputfile (output.sed)
       write (84,1080)
 1080  format (t8,'RCH',t17,'GIS',t23,'MON',t31,'AREAkm2',               
@@ -630,18 +631,18 @@
      &'CH_BEDtons',t232,'CH_DEPtons',t244,'FP_DEPtons',t259,'TSSmg/L')
      
       ! Jaehak, sedimentation-filtration output
-      open (77778,file = "bmp-sedfil.out") !jaehak temp urban print out
+      open (77778,file = data_out//"bmp-sedfil.out") !jaehak temp urban print out
       write(77778,'(a46)') 'Sed-Fil Basins Configuration'   
       write(77778,'(a46)') ''   ! 
        !retention-irrigation output
-      open (77779,file = "bmp-ri.out") !jaehak temp urban print out
+      open (77779,file = data_out//"bmp-ri.out") !jaehak temp urban print out
       write(77779,'(a46)') 'Retention-Irrigation Basins Configuration'
       write(77779,'(a46)') ''   ! 
 
 
 !! srin output file from watqual.f  
       if (ihumus ==1) then
-        open (82,file='output.wql')
+        open (82,file=data_out//'output.wql')
         write (82,6000)
  6000   format (18x,'WTEMP(C)',' ALGAE_INppm','  ALGAE_Oppm',
      *  '  ORGN_INppm',' ORGN_OUTppm','   NH4_INppm','  NH4_OUTppm',
@@ -653,7 +654,7 @@
 
 !! mauro/jerry whittaker hourly output file
       if (iphr > 0) then
-        open (83,file='hourq.out')
+        open (83,file=data_out//'hourq.out')
         write (83,6001) 
 6001    format (t29,'TOTAL',/,t27,'WATER YLD',/,
      *  t3,'YEAR',t10,'DAY',T15,'HOUR',t22,'HYD',t29,'(m**3)')
@@ -661,18 +662,18 @@
 !! end hourly codes
 
 !!darrell output files added for interface plotting
-      open (11,file='rch.dat')
-      open (12,file='hru.dat')
-      open (13,file='sub.dat')
-      open (14,file='rsv.dat')
+      open (11,file=data_swat//'rch.dat')
+      open (12,file=data_swat//'hru.dat')
+      open (13,file=data_swat//'sub.dat')
+      open (14,file=data_swat//'rsv.dat')
 !!darrell output files added for interface plotting
-      open (11123,file='hyd.out')
-      open (16,file='chan.deg')
-!!    open (17,file='wbl.out')
-      open (18,file='swat.qst')
+      open (11123,file=data_out//'hyd.out')
+      open (16,file=data_out//'chan.deg')
+!!    open (17,file=data_out//'wbl.out')
+      open (18,file=data_out//'swat.qst')
 !! output amount of water stored in the soil layer (formerly 'soilst.out')
       if (isto > 0) then
-        open (129,file='output.swr')
+        open (129,file=data_out//'output.swr')
         write (129,5001) 
 5001    format (t20,'Soil Storage (mm)',/,t15,'Layer #',/,t3,'Day',t13,
      *  'HRU',t28,'1',t40,'2',t52,'3',t64,'4',t76,'5',t87,'6',t100,
@@ -682,10 +683,10 @@
 
 !! Output daily streamflow velocity for each channel (subbasin)
       if (itemp == 1) then
-         open (141,file='output.vel')
+         open (141,file=data_out//'output.vel')
          write (141,4999)
  4999     format(t17,'CH_VEL',/,t3,'Day',t7,'Year',t18,'(m/s)')
-         open (142,file='output.dep')
+         open (142,file=data_out//'output.dep')
           write (142,4998)
  4998    format(t17,'AVE WATER',/,t3,'Day',t7,'Year',t18,'DEPTH(m)')
       end if
@@ -694,7 +695,7 @@
 !  0=no print 1=print
       read (101, *,iostat=eof) imgt
 	if (imgt==1) then
-         open (143, file="output.mgt", recl=600)
+         open (143, file=data_out//"output.mgt", recl=600)
          write (143,999)
 999      format(2x,'Sub',2x,'Hru',2x,'Year',3x,'Mon',3x,'Day',
      *'   AREAkm2', 3x,'crop/fert/pest', 4x,
@@ -722,9 +723,9 @@
 ! 0 =no print  1 =print
       read (101,*,iostat=eof) iwtr
         if (iwtr == 1) then
-          open (29,file="output.wtr",recl=800)
+          open (29,file=data_out//"output.wtr",recl=800)
 ! write statement added for Aziz (06/25/09)
-          open (125,file='output.pot')
+          open (125,file=data_out//'output.pot')
           write (125, 1000) 
         end if
         
@@ -741,14 +742,14 @@
       if (icalen == 1) iprint = 1
       
       if (isproj == 1) then
-        open (19,file="output2.std")
-        open (20,file="output2.rch",recl=600)
-        open (21,file="output2.hru",recl=800)
-        open (22,file="output2.rsv",recl=800)
+        open (19,file=data_out//"output2.std")
+        open (20,file=data_out//"output2.rch",recl=600)
+        open (21,file=data_out//"output2.hru",recl=800)
+        open (22,file=data_out//"output2.rsv",recl=800)
       end if
 
 !! septic result  J.Jeong Feb2009
-      open (173,file='septic.out')  
+      open (173,file=data_out//'septic.out')  
 	write(173,5102) 'HRU','YEAR','DAY','Precip', 'PERC',        
      & 'sol_ul','sol_st','sol_fc','nh3init','nh3bgn','nh3end',   
      & 'no3init','no3bgn','no3end', 'nitrN','denitrN','solpinit',

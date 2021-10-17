@@ -26,6 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use io, only: data_swat
       character (len=80) :: titldum
       integer :: eof 
   
@@ -35,7 +36,7 @@
 
 !!    Atmosperic deposition filename present in file.cio
       if (atmofile /= '             ') then
-        open (127,file=atmofile)
+        open (127,file=data_swat//atmofile)
           do iii = 1, 5
             read (127,5101) titldum
           end do

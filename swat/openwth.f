@@ -41,6 +41,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use io
 
       integer :: j, kk1, kk2, k
       character (len=80) :: titldum
@@ -59,7 +60,7 @@
         end if
         if (rfile(j) /= '             ') then
      !!     open (100+j,file=rfile(j),recl=800)
-          open (100+j,file=rfile(j),recl=1850)
+          open (100+j,file=data_swat//rfile(j),recl=1850)
           read (100+j,5000) titldum
           read (100+j,5000) titldum
           read (100+j,5000) titldum
@@ -82,7 +83,7 @@
           kk2 = kk1 + (ntgfil - 1)
         end if
         if (tfile(j) /= '             ') then
-  !!        open (118+j,file=tfile(j),recl=800)
+  !!        open (118+j,file=data_swat//tfile(j),recl=800)
           open (118+j,file=tfile(j),recl=20000)
           read (118+j,5000) titldum
           read (118+j,5000) titldum
@@ -93,24 +94,24 @@
 
         if (slrfile /= '             ') then
    !!       open (137,file=slrfile,recl=800)
-          open (137,file=slrfile,recl=15000)
+          open (137,file=data_swat//slrfile,recl=15000)
           read (137,5000) titldum
         end if
 
         if (rhfile /= '             ') then
-  !!        open (138,file=rhfile,recl=800)
-          open (138,file=rhfile,recl=15000)
+  !!        open (138,file=data_swat//rhfile,recl=800)
+          open (138,file=data_swat//rhfile,recl=15000)
           read (138,5000) titldum
         end if
 
         if (wndfile /= '             ') then
-   !!       open (139,file=wndfile,recl=800)
-          open (139,file=wndfile,recl=15000)
+   !!       open (139,file=data_swat//wndfile,recl=800)
+          open (139,file=data_swat//wndfile,recl=15000)
           read (139,5000) titldum
         end if
 
         if (petfile /= '             ') then
-          open (140,file=petfile)
+          open (140,file=data_swat//petfile)
           read (140,5000) titldum
         end if
 

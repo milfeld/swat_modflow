@@ -132,6 +132,7 @@
 
 
       use parm
+      use io
 
       character (len=80) :: titldum, snofile
       character (len=13) :: hrufile, chmfile, mgtfile, solfile, gwfile
@@ -177,7 +178,7 @@
       read (101,*) iwgage(i)
       read (101,5300) wgnfile
         call caps(wgnfile)
-        open (114,file=wgnfile)
+        open (114,file=data_wgn//wgnfile)
       read (101,*) fcst_reg(i)
       read (101,5100) titldum
       read (101,5100) titldum
@@ -198,16 +199,16 @@
       read (101,5100) titldum
       read (101,5300) pndfile
         call caps(pndfile)
-        open (104,file=pndfile)
+        open (104,file=data_pnd//pndfile)
       read (101,5100) titldum
       read (101,5300) wusfile
         call caps(wusfile)
-        open (105,file=wusfile)
+        open (105,file=data_wus//wusfile)
       read (101,5100) snofile
       if(snofile /='             ' .or. snofile /= 'Climate Change')then
         if (snofile /='             ') then
           if (snofile /= 'Climate Change') then
-            open (113,file=snofile)
+            open (113,file=data_swat//snofile)
             call caps (snofile)
             call readsno
           endif
@@ -266,21 +267,21 @@
           call caps(gwfile)
           if (septfile /='             ') then
             call caps (septfile)
-            open (172,file=septfile, status='old')
+            open (172,file=data_sep//septfile, status='old')
             isep_hru(ihru) = 1
             call readsepticbz
           end if
           if (sdrfile /= '             ') then
 	      call caps(sdrfile)
-	      open (112,file=sdrfile)
+	      open (112,file=data_sdr//sdrfile)
 	      call readsdr
 	    end if
           
-          open (106,file=chmfile)
-          open (107,file=solfile)
-          open (108,file=hrufile)
-          open (109,file=mgtfile)
-          open (110,file=gwfile)
+          open (106,file=data_chm//chmfile)
+          open (107,file=data_sol//solfile)
+          open (108,file=data_hru//hrufile)
+          open (109,file=data_mgt//mgtfile)
+          open (110,file=data_gw//gwfile)
           call readhru
           call readchm
           call readmgt
@@ -288,7 +289,7 @@
           call readgw
           if (opsfile /= '             ') then
             call caps(opsfile)
-            open (111,file=opsfile)
+            open (111,file=data_ops//opsfile)
             call readops
           end if
           

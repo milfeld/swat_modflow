@@ -1063,7 +1063,7 @@ C--Update heads.
  !       Itreal = Itreal + 1
       ELSE
         Icnvg = 1
- !     open(999,file='Init_head.dat')
+ !     open(999,file=data_mflow//'Init_head.dat') 
  !     if(kper==1)then
  !     Do il = 1, Nlay
  !       Do ir = 1, Nrow

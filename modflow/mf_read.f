@@ -18,7 +18,9 @@ C     Specify which modules are to be used
       use GWFUPWMODULE, only: LAYTYPUPW !tcw
       use LMTMODULE, only: ISSMT3D,IUMT3D,ILMTFMT !tcw
       use smrt_parm
+      use io
       INCLUDE 'mf_openspec.inc'
+
 
 C     Assign version number and date
       CHARACTER*40 VERSION,VERSION2
@@ -103,7 +105,7 @@ C     Get the name of the name file
 
 C     Open name file
       FNAME = 'modflow.mfn' !this is required
-      OPEN (UNIT=INUNIT,FILE=FNAME,STATUS='OLD',ACTION=ACTION(1))
+      OPEN (UNIT=INUNIT,FILE=data_mflow//FNAME,STATUS='OLD',ACTION=ACTION(1))
       NC=INDEX(FNAME,' ')
       WRITE(*,490)' Using NAME file: ',FNAME(1:NC)
       print *  !rtb
@@ -214,7 +216,7 @@ C     Initialize daycount (for mf_read subroutine) and read_stress flag
       num_MF_obs = 0
       MF_obs = 0
       if(mf_obs_flag.eq.1) then
-        open(30050,file='modflow.obs')
+        open(30050,file=data_mflow//'modflow.obs')
         read(30050,*)
         read(30050,*) num_MF_obs
         if(num_MF_obs.gt.0) then
@@ -223,7 +225,7 @@ C     Initialize daycount (for mf_read subroutine) and read_stress flag
             !1 = row, 2 = column, 3 = layer
             read(30050,*) (MF_obs(i,j),j=1,3)
           enddo
-          open(30051,file='swatmf_out_MF_obs')
+          open(30051,file=data_mflow//'swatmf_out_MF_obs')
           write(30051,*) 'Head values for selected MODFLOW cells'
         endif
       endif

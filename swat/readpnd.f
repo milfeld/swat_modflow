@@ -164,6 +164,7 @@
 
 
       use parm
+      use io
 
       character (len=80) :: titldum
       character (len=200) :: lus
@@ -350,7 +351,7 @@
 
       !! Detention pond  -- read from a separate file (.dpd)
       if (dpd_file /= '             ' .and. ievent > 0) then
-      open (104,file=dpd_file)
+      open (104,file=data_swat//dpd_file)
       read (104,5100,iostat=eof) titldum
       if (eof < 0) exit
       read (104,*,iostat=eof) dtp_onoff(i)
@@ -412,7 +413,7 @@
 
       !! Wet pond (.wpd file)
       if (wpd_file /= '             ' .and. ievent > 0) then
-      open (104,file=wpd_file)
+      open (104,file=data_swat//wpd_file)
       read (104,5100,iostat=eof) titldum
       if (eof < 0) exit
       read (104,*,iostat=eof) wtp_onoff(i)
@@ -478,7 +479,7 @@
 
       !! Retention-Irrigation
       if (rib_file /= '             '.and. ievent > 0) then
-      open (104,file=rib_file)
+      open (104,file=data_swat//rib_file)
       read (104,5100,iostat=eof) titldum
       if (eof < 0) exit
       read (104,*,iostat=eof) num_ri(i)
@@ -528,7 +529,7 @@
 
       !! Sedimentaton-Filtration (.sfb file)
       if (sfb_file /= '             '.and. ievent > 0) then     
-      open (104,file=sfb_file)
+      open (104,file=data_swat//sfb_file)
       read (104,'(a20)',iostat=eof) titldum
       if (eof < 0) exit
       read (104,*,iostat=eof) num_sf(i)

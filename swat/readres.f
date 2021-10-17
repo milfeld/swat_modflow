@@ -112,6 +112,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use io
 
       character (len=80) :: titldum
       character (len=13) :: resdayo, resmono
@@ -283,7 +284,7 @@
 !!    open daily reservoir outflow file 
       if (iresco(i) == 3) then
         call caps(resdayo)
-        open (350+i,file=resdayo)
+        open (350+i,file=data_swat//resdayo)
         read (350+i,1000) titldum
       end if
 
@@ -327,7 +328,7 @@
 !! read in monthly release data
       if (iresco(i) == 1) then
         call caps(resmono)
-        open (101,file=resmono)
+        open (101,file=data_swat//resmono)
         read (101,1000) titldum
           do j = 1, nbyr+2
             read (101,*,iostat=eof) (res_out(i,mon,j), mon = 1, 12)

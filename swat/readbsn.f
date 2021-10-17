@@ -342,6 +342,7 @@
 
 
       use parm
+      use io, only: data_swat
 
       character (len=80) :: titldum
       character (len=130) :: tlu
@@ -658,7 +659,7 @@
 
       call caps(petfile)
       call caps(wwqfile)
-      open (101,file=wwqfile)
+      open (101,file=data_swat//wwqfile)
 
 !!    calculate normalization parameters for water, nitrogen, and
 !!    phosphorus uptake
@@ -693,7 +694,7 @@
       close (103)
       
       if (cswat == 1) then
-	 open (100,file="cswat_profile.txt",recl=280)
+	 open (100,file=data_swat//"cswat_profile.txt",recl=280)
 	 write (100,*) 'year',';','day',';','hru',';','cmass',';','sol_rsd',
      & ';','mancmass'
       end if
@@ -701,7 +702,7 @@
        !!add by zhang
       !!=====================
       if (cswat == 2) then
-      open (98,file="cswat_profile.txt",recl=356)
+      open (98,file=data_swat//"cswat_profile.txt",recl=356)
        write (98,5102) 'year','day','lay','hru',
      &'sol_mass','sol_cmass','sol_nmass','sol_LS',
      &'sol_LM','sol_LSC','sol_LMC','sol_HSC',
@@ -710,7 +711,7 @@
      &'sol_fop','sol_orgp','sol_actp','sol_stap',
      &'sol_solp' 
 
-      open (1001,file="cswat_daily.txt",recl=786)
+      open (1001,file=data_swat//"cswat_daily.txt",recl=786)
       write (1001,5104) 'year','day','hru','rsdc','sedc',
      &'percc','latc','emitc','grainc','surfq_c',
      &'stoverc','NPPC','foc','rspc','tot_mass','tot_cmass','tot_nmass',
@@ -724,8 +725,8 @@
       !!add by zhang
       !!=====================
 
-!	open (111, file="final_n_balance.txt")
-!	open (112, file="final_yields.txt")
+!	open (111, file=data_swat//"final_n_balance.txt")
+!	open (112, file=data_swat//"final_yields.txt")
     !! carbon output ends 
      
       

@@ -294,6 +294,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use io, only data_swat
 
       character (len=80) :: titldum
       integer :: eof,dum,opnum,k,cobb_model
@@ -321,7 +322,7 @@
         dum = 10
       endif
 
-      open(100009,file='auto_irrig_hrus')
+      open(100009,file=data_swat//'auto_irrig_hrus')
 
 !!    read general management parameters
       read (109,5000) titldum
