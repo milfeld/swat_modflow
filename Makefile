@@ -6,6 +6,8 @@ FOR_FILES=$(shell find . -name "*.f*")
 MOD_FILES=$(shell find . -name "*.mod*")
 S_OBJ=$(patsubst %.f*, %.o, $(FOR_FILES))
 
+DISABLE="-diag-disable 8291,10006"
+
 FFLAG=-c -standard-semantics -fmessage-length=0 -ffixed-line-length-80  -funderscoring -fbacktrace -ffpe-trap=invalid,zero,overflow
 RFLAG=-O3
 LONGFIX=-ffixed-line-length-132
@@ -31,15 +33,15 @@ all: $(subobjall) $(S_OBJ) $(PROJ_NAME)
 
 $(PROJ_NAME): $(S_OBJ)
 	@echo Linking objects...
-	${FC} ${ARCH64} -fopenmp -mkl $^ -o $@ 
+	${FC} ${DISABLE} ${ARCH64} -fopenmp -mkl $^ -o $@ 
 
 %.o: %.f*
 	@echo Compiling and generating object $@ ...
-	${FC} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFREE} ${LONGFREE} $< $(CXXFLAGS) -o $@
+	${FC} ${DISABLE} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFREE} ${LONGFREE} $< $(CXXFLAGS) -o $@
 
 main.o: main.f
 	@echo Compiling and generating object $@ ...
-	${FC} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFIX} main.f -o main.o 
+	${FC} ${DISABLE} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFIX} main.f -o main.o 
 
 clean:
 	@echo Removing secondary things

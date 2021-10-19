@@ -446,6 +446,8 @@ C     Read and print a list of drain and optional associated
 C     return-flow recipient cells.  NAUX of the values in the list are
 C     optional -- auxiliary data.
 C     ******************************************************************
+      USE io
+
       CHARACTER*57 LABEL1, LABEL2, LABEL3
       CHARACTER*16 DRTAUX(NCAUX)
       DIMENSION DRTF(NDRTVL,MXDRT)
@@ -479,7 +481,7 @@ C  Check for and decode EXTERNAL and SFAC records.
         IN=NUNOPN
         WRITE(IOUT,520) IN,FNAME
   520   FORMAT(1X,/1X,'OPENING FILE ON UNIT ',I4,':',/1X,A)
-        OPEN(UNIT=IN,FILE=FNAME)
+        OPEN(UNIT=IN,FILE=data_mflow//FNAME)
         ICLOSE=1
         READ(IN,'(A)') LINE
       ENDIF

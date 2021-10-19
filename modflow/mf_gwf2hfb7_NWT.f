@@ -376,6 +376,8 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
+      USE io
+
       CHARACTER*(*) LABEL
       DIMENSION HFB(7,MXHFB)
       CHARACTER*200 LINE,FNAME
@@ -404,7 +406,7 @@ C1------Check for and decode EXTERNAL and SFAC records.
          IN = NUNOPN
          IF (IPRFLG.EQ.1) WRITE(IOUT,115) IN,FNAME
   115    FORMAT(1X,/1X,'OPENING FILE ON UNIT ',I4,':',/1X,A)
-         OPEN(UNIT=IN,FILE=FNAME,ACTION=ACTION(1))
+         OPEN(UNIT=IN,FILE=data_mflow//FNAME,ACTION=ACTION(1))
          ICLOSE = 1
          READ(IN,'(A)') LINE
       END IF

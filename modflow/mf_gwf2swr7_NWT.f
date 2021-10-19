@@ -11859,7 +11859,7 @@ C---------Check for and decode EXTERNAL and OPEN/CLOSE records.
              fname=line(istart:istop)
              Iut = nunopn
              IF( IPTFLG.EQ.1 ) WRITE(Iout,2005) Iut, fname
-             OPEN(UNIT=Iut,FILE=fname,ACTION=ACTION(1))
+             OPEN(UNIT=Iut,FILE=data_mflow//fname,ACTION=ACTION(1))
              Iclose = 1
           ELSE
             BACKSPACE(Iut)
@@ -11936,7 +11936,7 @@ C2--------Check for and decode EXTERNAL and OPEN/CLOSE records.
            fname=line(istart:istop)
            in=nunopn
            IF( IPTFLG.EQ.1 ) WRITE(Iout,2005) in, fname
-           OPEN(UNIT=in,FILE=fname,ACTION=ACTION(1))
+           OPEN(UNIT=in,FILE=data_mflow//fname,ACTION=ACTION(1))
            iclose=1
         ELSE
           BACKSPACE(in)

@@ -203,6 +203,7 @@ C     ******************************************************************
 C     Read and print a list.  NAUX of the values in the list are
 C     optional -- auxiliary data.
 C     ******************************************************************
+      USE io
       CHARACTER*(*) LABEL
       CHARACTER*16 CAUX(NCAUX)
       DIMENSION RLIST(LDIM,MXLIST)
@@ -233,7 +234,7 @@ C2------Check for and decode EXTERNAL and OPEN/CLOSE records.
          IN=NUNOPN
          IF(IPRFLG.EQ.1)WRITE(IOUT,115) IN,FNAME
   115    FORMAT(1X,/1X,'OPENING FILE ON UNIT ',I4,':',/1X,A)
-         OPEN(UNIT=IN,FILE=FNAME,ACTION=ACTION(1))
+         OPEN(UNIT=IN,FILE=data_mflow//FNAME,ACTION=ACTION(1))
          ICLOSE=1
          READ(IN,'(A)') LINE
       END IF
@@ -381,6 +382,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
+      USE io
       CHARACTER*24 ANAME
       DIMENSION A(JJ)
       CHARACTER*20 FMTIN
@@ -411,7 +413,7 @@ C2------FORMAT.  SET A FLAG SPECIFYING IF FREE FORMAT OR FIXED FORMAT.
          LOCAT=NUNOPN
          WRITE(IOUT,15) LOCAT,FNAME
    15    FORMAT(1X,/1X,'OPENING FILE ON UNIT ',I4,':',/1X,A)
-         OPEN(UNIT=LOCAT,FILE=FNAME,ACTION=ACTION(1))
+         OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,ACTION=ACTION(1))
          ICLOSE=1
       ELSE
 C
@@ -495,6 +497,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
+      USE io
       CHARACTER*24 ANAME
       DIMENSION IA(JJ,II)
       CHARACTER*20 FMTIN
@@ -543,10 +546,10 @@ C3------FOR FREE FORMAT CONTROL RECORD, READ REMAINING FIELDS.
             FMTIN=CNTRL(ISTART:ISTOP)
             IF(ICLOSE.NE.0) THEN
                IF(FMTIN.EQ.'(BINARY)') THEN
-                  OPEN(UNIT=LOCAT,FILE=FNAME,FORM=FORM,ACCESS=ACCESS,
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,FORM=FORM,ACCESS=ACCESS,
      &                 ACTION=ACTION(1))
                ELSE
-                  OPEN(UNIT=LOCAT,FILE=FNAME,ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,ACTION=ACTION(1))
                END IF
             END IF
             IF(LOCAT.GT.0 .AND. FMTIN.EQ.'(BINARY)') LOCAT=-LOCAT
@@ -724,6 +727,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
+      USE io
       CHARACTER*24 ANAME
       DIMENSION A(JJ,II)
       CHARACTER*20 FMTIN
@@ -773,10 +777,10 @@ C3------FOR FREE FORMAT CONTROL RECORD, READ REMAINING FIELDS.
             FMTIN=CNTRL(ISTART:ISTOP)
             IF(ICLOSE.NE.0) THEN
                IF(FMTIN.EQ.'(BINARY)') THEN
-                  OPEN(UNIT=LOCAT,FILE=FNAME,FORM=FORM,ACCESS=ACCESS,
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,FORM=FORM,ACCESS=ACCESS,
      &                 ACTION=ACTION(1))
                ELSE
-                  OPEN(UNIT=LOCAT,FILE=FNAME,ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,ACTION=ACTION(1))
                END IF
             END IF
             IF(LOCAT.GT.0 .AND. FMTIN.EQ.'(BINARY)') LOCAT=-LOCAT

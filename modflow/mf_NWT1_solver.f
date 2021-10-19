@@ -851,6 +851,7 @@ C-------STRAIGHT LINE WITH PARABOLIC SMOOTHING
 !      USE SAMGMODULE
       USE ilupc_mod
       USE machine_constants
+      USE io
       IMPLICIT NONE
 !     ------------------------------------------------------------------
 !     SPECIFICATIONS:
@@ -1063,7 +1064,7 @@ C--Update heads.
  !       Itreal = Itreal + 1
       ELSE
         Icnvg = 1
- !     open(999,file=data_mflow//'Init_head.dat') 
+ !     open(999,file=data_out//'Init_head.dat') 
  !     if(kper==1)then
  !     Do il = 1, Nlay
  !       Do ir = 1, Nrow

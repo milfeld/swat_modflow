@@ -4988,6 +4988,7 @@ C      ********************************************************
 C
 C---SPECIFICATIONS
 C
+      USE io
       IMPLICIT DOUBLE PRECISION (A-H, O-Z)
       DIMENSION GAMMA(5)
 C
@@ -5001,7 +5002,7 @@ C---COMMON STATEMENTS
       COMMON /PAR10/ RD,ZD,ZD1,ZD2
       COMMON /PAR11/ XLD,XDD,WD,SW
 C
-c      OPEN(UNIT=94,FILE='PPC.out',STATUS='OLD')
+c      OPEN(UNIT=94,FILE=data_out//'PPC.out',STATUS='OLD')
 C
 C
 C---THE FOLLOWING PARAMETERS NEED TO BE PASSED FROM MAIN PROGRAM

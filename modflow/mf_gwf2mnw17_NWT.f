@@ -56,6 +56,7 @@ c     ------------------------------------------------------------------
       USE PCGMODULE,ONLY:HCLOSEPCG
       USE GMGMODULE,ONLY:HCLOSEGMG
       USE GWFNWTMODULE,ONLY:Tol
+      USE io
       IMPLICIT NONE
 c     ------------------------------------------------------------------
       INTRINSIC ABS
@@ -209,7 +210,7 @@ c            Find and use file name
                 tx2 = txt(kf+5:256)
                 kf = INDEX(tx2, ' ') - 1
                 CLOSE (ABS(IOWELL2(jf)))
-                OPEN (ABS(IOWELL2(jf)), FILE=tx2(1:kf))
+                OPEN (ABS(IOWELL2(jf)), FILE=data_out//tx2(1:kf))
                 WRITE (tx2(253:256), '(i4)') ABS(IOWELL2(jf))
                 txt = ' A '//ftag(jf)
      +                //' data input file will be written'//' to '//
@@ -1555,7 +1556,7 @@ c   Build output file name and Open file
         k2 = INDEX(Temptag, ' ') - 1
         IF ( k2.EQ.0 .AND. Temptag(32:32).NE.' ' ) k2 = 32
         txt = MNWNAME(1:k1)//'.'//Temptag(1:k2)//'.txt'
-        OPEN (Io+Iostart, FILE=txt)
+        OPEN (Io+Iostart, FILE=data_out//oxt)
       ENDIF
 c
       END SUBROUTINE IOWELLOUT
@@ -2054,6 +2055,7 @@ c     NCREAD: reads lines of input and ignores lines that begin with a "#" sign.
 c          All information after a ! is wiped from the input card.
 c     ******************************************************************
       SUBROUTINE NCREAD(Io, Txt, Ierr)
+      USE io
       IMPLICIT NONE
       EXTERNAL UPCASE, USTOP
 c Arguments

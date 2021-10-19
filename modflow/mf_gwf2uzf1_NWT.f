@@ -17,6 +17,7 @@ C     ******************************************************************
       USE GWFBCFMODULE, ONLY: SC1, SC2, LAYCON
       USE GWFHUFMODULE, ONLY: SC2HUF
       USE GWFUPWMODULE, ONLY: SC2UPW
+      USE io
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C     SPECIFICATIONS:
@@ -3022,7 +3023,7 @@ C Print net recharge as ascii to a separate output file
 !        END DO
 !        IPRCNT = IPRCNT + 1
 !        IF ( ibd.GT.0 .OR. ibduzf.GT.0 ) THEN
-!          OPEN(991,file='Netrech.txt')
+!          OPEN(991,file=data_out//'Netrech.txt')
 !          write(991,*)kkper, kkstp
 !          DO ir = 1, NROW
 !            WRITE(991,221)(FNETEXFIL(ic, ir)/float(IPRCNT),ic=1,NCOL)

@@ -1824,6 +1824,7 @@ C5------RETURN.
       SUBROUTINE SGWF2BAS7OPEN(INUNIT,IOUT,IUNIT,
      1              NIUNIT,VERSION,INBAS,MAXUNIT,MFVNAM)
       USE GLOBAL,     ONLY:CUNIT
+      USE io
 C     ******************************************************************
 C     OPEN FILES.
 C     ******************************************************************
@@ -1893,7 +1894,7 @@ C6------SPECIAL CHECK FOR 1ST FILE.
       IF(NFILE.EQ.0) THEN
         IF(FILTYP.EQ.'LIST') THEN
           IOUT=IU
-          OPEN(UNIT=IU,FILE=FNAME(1:IFLEN),STATUS='REPLACE',
+          OPEN(UNIT=IU,FILE=data_out//FNAME(1:IFLEN),STATUS='REPLACE',
      1          FORM='FORMATTED',ACCESS='SEQUENTIAL')
           WRITE(IOUT,60) MFVNAM,SPACES(1:INDENT),VERSION(1:LENVER)
 60        FORMAT(34X,'MODFLOW',A,/,
@@ -1980,7 +1981,7 @@ cDEC$ ELSE
       endif !aqd
 cDEC$ ENDIF
 
-      OPEN(UNIT=IU,FILE=FNAME(1:IFLEN),FORM=FMTARG,
+      OPEN(UNIT=IU,FILE=data_mflow//FNAME(1:IFLEN),FORM=FMTARG,
      1      ACCESS=ACCARG,STATUS=FILSTAT,ACTION=FILACT,ERR=2000)
       NFILE=NFILE+1
       GO TO 10
