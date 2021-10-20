@@ -608,7 +608,7 @@
         open (33333,file=data_out//"outputb.hru",form='unformatted')
       end if
       open (30,file=data_out//"output.pst",recl=600)
-      open (31,file="output.sub",recl=600)
+      open (31,file=data_out//"output.sub",recl=600)
       if (ia_b == 1) then
         open (66666,file = data_out//"outputb.sub", form = 'unformatted')
       end if

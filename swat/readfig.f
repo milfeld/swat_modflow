@@ -284,7 +284,7 @@
               read (102,5100) day_in
               call caps(day_in)
               if (inum1s(idum) <= 10 .and. inum1s(idum) > 0) then
-                open (40+inum1s(idum),file=data_swat//day_in,recl=350)
+                open (40+inum1s(idum),file=data_out//day_in,recl=350)
                 if (inum3s(idum) == 0) then
                   write (40+inum1s(idum),5400) title
                   write (40+inum1s(idum),5500)
@@ -341,7 +341,7 @@
               read (102,5100) day_in
               call caps(day_in)
               if (inum1s(idum) <= 50 .and. inum1s(idum) > 0) then
-                open (50+inum1s(idum),file=data_swat//day_in,recl=350)
+                open (50+inum1s(idum),file=data_out//day_in,recl=350)
                 write (50+inum1s(idum),5400) title
                 write (50+inum1s(idum),5600)
               end if

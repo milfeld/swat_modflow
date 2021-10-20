@@ -59,7 +59,7 @@
          kk2 = kk1 + (nrgfil - 1)
         end if
         if (rfile(j) /= '             ') then
-     !!     open (100+j,file=rfile(j),recl=800)
+     !!     open (100+j,file=data_swat/rfile(j),recl=800)
           open (100+j,file=data_swat//rfile(j),recl=1850)
           read (100+j,5000) titldum
           read (100+j,5000) titldum
@@ -84,7 +84,7 @@
         end if
         if (tfile(j) /= '             ') then
   !!        open (118+j,file=data_swat//tfile(j),recl=800)
-          open (118+j,file=tfile(j),recl=20000)
+          open (118+j,file=data_swat/tfile(j),recl=20000)
           read (118+j,5000) titldum
           read (118+j,5000) titldum
           read (118+j,5000) titldum
@@ -93,7 +93,7 @@
       end do
 
         if (slrfile /= '             ') then
-   !!       open (137,file=slrfile,recl=800)
+   !!       open (137,file=data_swat/slrfile,recl=800)
           open (137,file=data_swat//slrfile,recl=15000)
           read (137,5000) titldum
         end if

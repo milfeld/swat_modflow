@@ -289,7 +289,7 @@
           call readgw
           if (opsfile /= '             ') then
             call caps(opsfile)
-            open (111,file=data_ops//opsfile)
+            open (111,file=data_swat//opsfile)
             call readops
           end if
           
