@@ -1,27 +1,33 @@
 #!/bin/bash
-# Check location of input and output files
-# (except for suffix files:)
+
+# file_checker Checks location of input and output files
+
+# (except for suffix files:
+#  chm gw hru lwq mgt pnd res rte sdr sep sol sub swq wgn wus
+#    which are in directories data_chm, data_gw, etc.)
 
 # Parameters:
 # TOP_DIR           Top Level where Data is Located - Default=PWD
-# PRINT_NOT_FOUNDS  set to "no" show files which are not found - Default=yes
+# PRINT_NOT_FOUNDS  set to "no" to NOT show files which are not found - Default=yes
 # FIND_DIR          Standard directories - no need to change this
   
 # Standard directories for files
-# all           outputs: data_out
-# SWAT           inputs: data_swat
-# SMRT (swatmf)  inputs: data_swatmf
-# MODFLOW        inputs: data_mflow
+# all             outputs: data_out
+# SWAT             inputs: data_swat
+# SMRT (swatmf)    inputs: data_swatmf
+# MODFLOW          inputs: data_mflow
+# *.chm, *.gw, ... inputs: data_chm, data_gw, etc.
 
-#OUTPUT
-#Check to make sure files are in their correct place.
+# OUTPUT
+# Check to make sure files are in their correct place.
 #   "@" == mean file found in correct location
 #   "X" == file is not in  correct location
 #   "-" == file not found (probably output not present before run,
-#                          or file not use for the simulation)
-
-#   If file found in TOP_DIR (PWD,or whatever is set below)
+#                          or file not used in this simulation)
+#
+#   If file found in TOP_DIR (PWD, or whatever is set below)
 #   file is moved to standard location
+#
 #                         Oct. 21 2021  Kent milfeld@tacc.utexas.edu
 
 PRINT_NOT_FOUNDS=yes
