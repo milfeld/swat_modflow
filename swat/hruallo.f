@@ -65,6 +65,7 @@
 
 
       use parm
+      use io, only: data_swat
 
       character (len=13) :: hrufile, mgtfile, solfile, chmfile
       character (len=80) ::  titldum
@@ -86,7 +87,7 @@
         call caps(mgtfile)
         call caps(solfile)
         call caps(chmfile)
-        open (9,file=solfile,recl=350)
+        open (9,file=data_swat//solfile,recl=350)
         !! calculate # of soil layers in profile
           depth = 0.
           lyrtot = 0
@@ -104,7 +105,7 @@
           end do
           mlyr = Max(mlyr,lyrtot)
         close (9)
-        open (10,file=mgtfile)
+        open (10,file=data_swat//mgtfile)
       
 !!  calculate max number of operations per hru
         iopera_sub = 1
@@ -127,7 +128,7 @@
         
         close (10)            !!   nubz test
                    
-        open (11,file=chmfile)
+        open (11,file=data_swat//chmfile)
           eof = 0
           do 
             do k = 1, 11

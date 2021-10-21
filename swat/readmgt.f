@@ -322,7 +322,7 @@
         dum = 10
       endif
 
-      open(100009,file=data_swat//'auto_irrig_hrus')
+      open(100009,file=data_out//'auto_irrig_hrus')
 
 !!    read general management parameters
       read (109,5000) titldum

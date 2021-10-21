@@ -1,0 +1,125 @@
+#!/bin/bash
+# Check location of input and output files
+# (except for suffix files:)
+
+# Parameters:
+# TOP_DIR           Top Level where Data is Located - Default=PWD
+# PRINT_NOT_FOUNDS  set to "no" show files which are not found - Default=yes
+# FIND_DIR          Standard directories - no need to change this
+  
+# Standard directories for files
+# all           outputs: data_out
+# SWAT           inputs: data_swat
+# SMRT (swatmf)  inputs: data_swatmf
+# MODFLOW        inputs: data_mflow
+
+#OUTPUT
+#Check to make sure files are in their correct place.
+#   "@" == mean file found in correct location
+#   "X" == file is not in  correct location
+#   "-" == file not found (probably output not present before run,
+#                          or file not use for the simulation)
+
+#   If file found in TOP_DIR (PWD,or whatever is set below)
+#   file is moved to standard location
+#                         Oct. 21 2021  Kent milfeld@tacc.utexas.edu
+
+PRINT_NOT_FOUNDS=yes
+TOP_DIR=`pwd`
+MV_TO_DIR=yes
+
+FIND_DIR="data_out data_swat data_swatmf data_mflow"
+for dir in $FIND_DIR; do   #make sure directory is present
+  mkdir -p $dir
+done
+
+
+##v  Code:  Lists and processing   v##
+
+data_input_swat_list=( ATMO.ATM basins.bsn basins.wwq cst.cst fert.dat fig.fig file.cio hru.dat input.std lup.dat pcp1.pcp pest.dat plant.dat rch.dat rsv.dat septwq.dat slr.slr sub.dat till.dat tmp1.tmp Tmp1.Tmp tmp2.tmp Tmp2.Tmp urban.dat wnd.wnd lupd.dat rhfile petfile )
+
+data_output_swat_list=( swat output chan.deg auto_irrig_hrus bmp-ri.out bmp-sedfil.out hyd.out output.pst output.rch output.rsv output.sed output.std septic.out output.snu output.snw output.hru outputb.hru outputb.sub outputb.rch output.wql hourq.out wbl.out output.vel output.dep output.mgt output.wtr output.pot output2.std output2.rch output2.hru output2.rsv air_soil.out output.sub output.sed cswat_profile.txt cswat_profile.txt cswat_daily.txt final_n_balance.txt final_yields.txt swat.qst )
+
+data_input_mflow_list=( modflow.obs modflow.mfn wabash1.bas wabash1.dis wabash1.hds wabash1.list wabash1.nwt wabash1.oc wabash1.rch wabash1.riv wabash1.upw )
+data_output_mflow_list=( Init_head.dat swatmf_out_MF_obs Netrech.txt )
+
+data_input_swatmf_list=( swatmf_dhru2grid.txt swatmf_dhru2hru.txt swatmf_grid2dhru.txt swatmf_link.txt swatmf_river2grid.txt )
+data_output_swatmf_list=( swatmf_out_MF_gwsw swatmf_out_MF_gwsw_monthly swatmf_out_MF_gwsw_yearly swatmf_out_MF_head_monthly swatmf_out_MF_head_yearly swatmf_out_MF_recharge swatmf_out_MF_recharge_monthly swatmf_out_MF_recharge_yearly swatmf_out_MF_riverstage swatmf_out_SWAT_channel swatmf_out_SWAT_gwsw swatmf_out_SWAT_gwsw_monthly swatmf_out_SWAT_gwsw_yearly swatmf_out_SWAT_recharge swatmf_out_SWAT_recharge_monthly swatmf_out_SWAT_recharge_yearly swatmf_log swatmf_out_RT_rivno3 swatmf_out_SWAT_rivno3 swatmf_out_RT_rechno3 swatmf_out_SWAT_rechno3 swatmf_out_RT_rivP swatmf_out_SWAT_rivP swatmf_out_RT_rechP swatmf_out_SWAT_rechP swatmf_out_RT_cno3_monthly swatmf_out_RT_cno3_yearly swatmf_out_RT_cp_monthly swatmf_out_RT_cp_yearly sub_km swatmf_out_pumped_sub swatmf_out_pumped_hru swatmf_out_pumping )
+
+file_check() {
+   local file_list=($@)
+   
+   for file in ${file_list[@]} ; do
+   
+      ls  $TOP_DIR/$file >& /dev/null
+      if [[ $? == 0 ]]; then            #found in top level directory
+          printf " %32s  X  found in  %s (Top Dir)\n" $file $TOP_DIR
+          if [[ $MV_TO_DIR == yes ]]; then
+             printf "                                      Moving to %s\n" $DIR_DATA
+             mv $file $DIR_DATA
+          fi
+          continue
+      fi
+   
+      pathname=$(find $FIND_DIRS -name $file )
+      if [[ x$pathname == x ]] ; then   #file not found
+         [[ $PRINT_NOT_FOUNDS == yes ]] &&
+         printf " %32s  -  not found\n" $file
+      else
+         dir=`dirname $pathname`
+         if [[ $dir == ./$DIR_DATA ]]; then
+            printf " %32s  @\n" $file
+         else
+            printf " %32s  X  found in  %s\n" $file $dir
+         fi
+      fi
+   done
+}   
+
+
+echo " SWAT ========================================================================="
+DIR_DATA=data_swat
+echo "   INPUT  DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+file_check "${data_input_swat_list[@]}"
+
+echo "   ----------------------------------------------------------------------------"
+DIR_DATA=data_out
+echo "   OUTPUT DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+DIR_DATA=data_out
+file_check "${data_output_swat_list[@]}"
+
+echo "==============================================================================="
+echo ""; echo ""
+
+echo " MODFLOW======================================================================="
+DIR_DATA=data_mflow
+echo "   INPUT  DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+file_check "${data_input_mflow_list[@]}"
+
+echo "-------------------------------------------------------------------------------"
+DIR_DATA=data_out
+echo "   OUTPUT DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+file_check "${data_output_mflow_list[@]}"
+
+echo " SWATMF (SMRT) ================================================================"
+echo ""; echo ""
+DIR_DATA=data_swatmf
+echo "   INPUT  DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+file_check "${data_input_swatmf_list[@]}"
+
+echo "-------------------------------------------------------------------------------"
+DIR_DATA=data_out
+echo "   OUTPUT DIRECTORY: $DIR_DATA"
+echo "   ---------------"
+file_check "${data_output_swatmf_list[@]}"
+
+echo "==============================================================================="
+
+
+
+
