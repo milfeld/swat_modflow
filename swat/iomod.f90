@@ -1,11 +1,42 @@
-module io
-  character(:),  PUBLIC,allocatable  ::  work_dir
-  character(:),  PUBLIC,allocatable  ::  data_dir
-  character(:),  PUBLIC,allocatable  ::  conf_dir
-  character(:),  PUBLIC,allocatable  ::  out_dir
+module io_dirs
+!!
+!! All files in open statements have a directory suffix of the form:
+!!       open(UNIT, file=data_xxxx//<file_name>
+!!       where data_xxxx is one of the variables below
+!!       and <file_name> is a character array
+!!       data_xxx is a directory for the data or output.
+
+!! Environment variables set  the top level path for the files:
+!!     SWAT_DATA     swat_data_dir
+!!     SWAT_OUTPUT    swat_out_dir
+!!     SWAT_CONF     swat_conf_dir not implemented
+!!     SWAT_WORK     swat_work_dir not implemented
+!!
+!!  SWAT_DATA
+!!     |
+!!  -------------------------------------------
+!!  |        |            |         |          |
+!!  data_chm data_gw ... data_swat  data_mflow data_swatmf
+!!
+!!  SWAT_OUTPUT
+!!     |
+!!  ---------------
+!!       | 
+!!       data_out
+!!
+!!  *******  Usually SWAT_OUTPUT and SWAT_DATA are the same directory
+!!  ******* NOTE: output goes to data_out subdirectory
+
+!! TODO:
+!!        make it possible to not use subdirectory for output
+!!        (Important for output, which get created during execution.)
+!!
+  character(:),  PUBLIC,allocatable  ::  swat_data_dir
+  character(:),  PUBLIC,allocatable  ::  swat_out_dir
+  character(:),  PUBLIC,allocatable  ::  swat_work_dir
+  character(:),  PUBLIC,allocatable  ::  swat_conf_dir
 
   character(:),  PUBLIC,allocatable  ::  data_out
-
   character(:),  PUBLIC,allocatable  ::  data_swat
   character(:),  PUBLIC,allocatable  ::  data_swatmf
   character(:),  PUBLIC,allocatable  ::  data_mflow
@@ -42,10 +73,11 @@ contains
       dir(length+1:length+1)= '/'
       length=length+1
    endif
-   allocate(character(len=length) :: work_dir)   !work_dir has exact len of string
-   work_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
+   allocate(character(len=length) :: swat_work_dir)   !swat_work  has exact len of string
+   swat_work_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
 
-   print*,"Set work_dir to ",work_dir
+   !!Not in use
+   !!print*,"Set swat_work_dir directory to ",swat_work_dir
 
 !SWAT_DATA DIR
 
@@ -61,8 +93,8 @@ contains
       length=length+1
    endif
 
-   allocate(character(len=length) :: data_dir)  !data_dir has exact len of string
-   data_dir(1:length)=dir(1:length)             !avoids using trim in open stmnt
+   allocate(character(len=length) :: swat_data_dir)   !swat_data  has exact len of string
+   swat_data_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
 
    allocate(character(len=length+9) :: data_chm); data_chm(1:length+9)=dir(1:length)//"data_chm/"
    allocate(character(len=length+9) :: data_gw ); data_gw( 1:length+8)=dir(1:length)//"data_gw/"
@@ -84,9 +116,6 @@ contains
    allocate(character(len=length+12) :: data_swatmf); data_swatmf(1:length+12)=dir(1:length)//"data_swatmf/"
    allocate(character(len=length+11) :: data_mflow ); data_mflow( 1:length+11)=dir(1:length)//"data_mflow/"
 
-   print*,"Set data directories in ",data_dir
-
-
 !SWAT_OUTPUT DIR
    dir=repeat(" ",sizeof(dir))
    call get_environment_variable("SWAT_OUTPUT",dir,LENGTH=length)
@@ -100,14 +129,13 @@ contains
       length=length+1
    endif
 
-   allocate(character(len=length) :: out_dir)   !data_dir has exact len of string
-   out_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
+   allocate(character(len=length) :: swat_out_dir)   !swat_out_dir has exact len of string
+   swat_out_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
 
-   allocate(character(len=length+9)  :: data_out)      !data_dir has exact len of string
+   allocate(character(len=length+9)  :: data_out)      !swat_out_dir has exact len of string
    data_out(1:length+9)=dir(1:length)//"data_out/"     !avoids using trim in open stmnt
 
-   print*,"Set data_out to  SWAT_OUTPUT +  data_out: ",data_out
-
+   call system('mkdir -p '//data_out)
 
 !SWAT_CONFIGURE DIR
 
@@ -122,9 +150,17 @@ contains
       dir(length+1:length+1)= '/'
       length=length+1
    endif
-   allocate(character(len=length) :: conf_dir) !conf_dir has exact len of string
-   conf_dir(1:length)=dir(1:length)            !avoids using trim in open stmnt
-   print*,"Set conf_dir to ",conf_dir
+   allocate(character(len=length) :: swat_conf_dir) !swat_conf_dir has exact len of string
+   swat_conf_dir(1:length)=dir(1:length)            !avoids using trim in open stmnt
+
+!  ### PRINT INFO ###
+
+   print*,"Set  swat_out_dir to: ",swat_out_dir
+   print*,"Set      data_out to: ",data_out
+   print*,"Set swat_data_dir to: ",swat_data_dir
+   print*,"Set     data_swat to: ",data_swat
+   print*,"Set   data_swatmf to: ",data_swatmf
+   print*,"Set    data_mflow to: ",data_mflow
 
   end subroutine
 

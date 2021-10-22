@@ -52,6 +52,8 @@
 
       use parm
       use smrt_parm
+      use io_dirs
+
       implicit none
       prog = "SWAT Mar 17 2015    VER 2012/Rev 636_smrt"
       write (*,1000)
@@ -60,6 +62,10 @@
      &          "      Soil & Water Assessment Tool    ",/,             
      &          "               PC Version             ",/,             
      &          " Program reading from file.cio . . . executing",/)
+
+!! Set up directories from SWAT_DATA & SWAT_OUTPUT env vars(defaults ./)
+
+      call get_io_dirs()  
 
 !! process input
 		
