@@ -294,7 +294,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
-      use io_dirs, only data_swat
+      use io_dirs, only: data_swat, data_out
 
       character (len=80) :: titldum
       integer :: eof,dum,opnum,k,cobb_model

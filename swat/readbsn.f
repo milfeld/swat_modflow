@@ -342,7 +342,7 @@
 
 
       use parm
-      use io_dirs, only: data_swat
+      use io_dirs, only: data_swat, data_out
 
       character (len=80) :: titldum
       character (len=130) :: tlu

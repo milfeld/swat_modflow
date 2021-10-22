@@ -546,10 +546,11 @@ C3------FOR FREE FORMAT CONTROL RECORD, READ REMAINING FIELDS.
             FMTIN=CNTRL(ISTART:ISTOP)
             IF(ICLOSE.NE.0) THEN
                IF(FMTIN.EQ.'(BINARY)') THEN
-                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,FORM=FORM,ACCESS=ACCESS,
-     &                 ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,
+     &                 FORM=FORM, ACCESS=ACCESS, ACTION=ACTION(1))
                ELSE
-                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,
+     &                 ACTION=ACTION(1))
                END IF
             END IF
             IF(LOCAT.GT.0 .AND. FMTIN.EQ.'(BINARY)') LOCAT=-LOCAT
@@ -777,10 +778,11 @@ C3------FOR FREE FORMAT CONTROL RECORD, READ REMAINING FIELDS.
             FMTIN=CNTRL(ISTART:ISTOP)
             IF(ICLOSE.NE.0) THEN
                IF(FMTIN.EQ.'(BINARY)') THEN
-                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,FORM=FORM,ACCESS=ACCESS,
-     &                 ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,FORM=FORM,
+     &                 ACCESS=ACCESS, ACTION=ACTION(1))
                ELSE
-                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,ACTION=ACTION(1))
+                  OPEN(UNIT=LOCAT,FILE=data_mflow//FNAME,
+     &                 ACTION=ACTION(1))
                END IF
             END IF
             IF(LOCAT.GT.0 .AND. FMTIN.EQ.'(BINARY)') LOCAT=-LOCAT

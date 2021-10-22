@@ -610,12 +610,12 @@
       open (30,file=data_out//"output.pst",recl=600)
       open (31,file=data_out//"output.sub",recl=600)
       if (ia_b == 1) then
-        open (66666,file = data_out//"outputb.sub", form = 'unformatted')
+        open (66666,file=data_out//"outputb.sub", form='unformatted')
       end if
       open (7,file=data_out//"output.rch",recl=800)
       open (8,file=data_out//"output.rsv",recl=800)
       if (ia_b == 1) then
-        open (77777,file = data_out//"outputb.rch", form = 'unformatted')
+        open (77777,file=data_out//"outputb.rch", form='unformatted')
       end if
       
 !!    sediment routing output file

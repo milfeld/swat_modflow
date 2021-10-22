@@ -105,7 +105,8 @@ C     Get the name of the name file
 
 C     Open name file
       FNAME = 'modflow.mfn' !this is required
-      OPEN (UNIT=INUNIT,FILE=data_out//FNAME,STATUS='OLD',ACTION=ACTION(1))
+      OPEN (UNIT=INUNIT,FILE=data_out//FNAME,
+     &      STATUS='OLD',ACTION=ACTION(1))
       NC=INDEX(FNAME,' ')
       WRITE(*,490)' Using NAME file: ',FNAME(1:NC)
       print *  !rtb
