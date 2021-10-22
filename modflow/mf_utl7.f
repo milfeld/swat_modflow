@@ -203,7 +203,7 @@ C     ******************************************************************
 C     Read and print a list.  NAUX of the values in the list are
 C     optional -- auxiliary data.
 C     ******************************************************************
-      USE io
+      USE io_dirs
       CHARACTER*(*) LABEL
       CHARACTER*16 CAUX(NCAUX)
       DIMENSION RLIST(LDIM,MXLIST)
@@ -382,7 +382,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
-      USE io
+      USE io_dirs
       CHARACTER*24 ANAME
       DIMENSION A(JJ)
       CHARACTER*20 FMTIN
@@ -497,7 +497,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
-      USE io
+      USE io_dirs
       CHARACTER*24 ANAME
       DIMENSION IA(JJ,II)
       CHARACTER*20 FMTIN
@@ -727,7 +727,7 @@ C     ******************************************************************
 C
 C        SPECIFICATIONS:
 C     ------------------------------------------------------------------
-      USE io
+      USE io_dirs
       CHARACTER*24 ANAME
       DIMENSION A(JJ,II)
       CHARACTER*20 FMTIN

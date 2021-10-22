@@ -94,7 +94,7 @@
       use mf_rt_link, only: rt_active,rt_rivmass,rt_drnmass !MODFLOW-RT3D Linkage
       use rt_global, only: CNEW !RT3D
       use smrt_parm !smrt linkage
-      use io, only: data_swatmf, data_out
+      use io_dirs, only: data_swatmf, data_out
       implicit none
       
 !     define local variables

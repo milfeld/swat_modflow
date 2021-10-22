@@ -17,7 +17,7 @@ C     ******************************************************************
       USE GWFBCFMODULE, ONLY: SC1, SC2, LAYCON
       USE GWFHUFMODULE, ONLY: SC2HUF
       USE GWFUPWMODULE, ONLY: SC2UPW
-      USE io
+      USE io_dirs
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C     SPECIFICATIONS:

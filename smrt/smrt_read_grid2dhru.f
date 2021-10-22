@@ -33,7 +33,7 @@
 !     Import variables
       use GLOBAL, only: NCOL, NROW, NLAY !MODFLOW
       use smrt_parm !SWAT-MODFLOW linkage
-      use io, only: data_swatmf
+      use io_dirs, only: data_swatmf
       implicit none
       
       !Initialize local variables

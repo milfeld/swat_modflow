@@ -4988,7 +4988,7 @@ C      ********************************************************
 C
 C---SPECIFICATIONS
 C
-      USE io
+      USE io_dirs
       IMPLICIT DOUBLE PRECISION (A-H, O-Z)
       DIMENSION GAMMA(5)
 C

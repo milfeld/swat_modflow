@@ -119,7 +119,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
-      use io, only: data_swat, data_out
+      use io_dirs, only: data_swat, data_out
 
       character (len=13) :: figfile, bsnfile, plantdb, tilldb, urbandb, 
      &    pestdb, fertdb, fcstfile

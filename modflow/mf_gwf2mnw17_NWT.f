@@ -56,7 +56,7 @@ c     ------------------------------------------------------------------
       USE PCGMODULE,ONLY:HCLOSEPCG
       USE GMGMODULE,ONLY:HCLOSEGMG
       USE GWFNWTMODULE,ONLY:Tol
-      USE io
+      USE io_dirs, only: data_out
       IMPLICIT NONE
 c     ------------------------------------------------------------------
       INTRINSIC ABS
@@ -1527,6 +1527,7 @@ c     ******************************************************************
 c     ******************************************************************
       SUBROUTINE IOWELLOUT(Temptag, Iostart, Io)
       USE GWFMNW1MODULE, ONLY : NWELL2,MNWSITE,MNWNAME
+      use io_dirs, only: data_out
       IMPLICIT NONE
 c Arguments
       INTEGER, INTENT(IN) :: Iostart
@@ -1556,7 +1557,7 @@ c   Build output file name and Open file
         k2 = INDEX(Temptag, ' ') - 1
         IF ( k2.EQ.0 .AND. Temptag(32:32).NE.' ' ) k2 = 32
         txt = MNWNAME(1:k1)//'.'//Temptag(1:k2)//'.txt'
-        OPEN (Io+Iostart, FILE=data_out//oxt)
+        OPEN (Io+Iostart, FILE=data_out//txt)
       ENDIF
 c
       END SUBROUTINE IOWELLOUT
@@ -2055,7 +2056,7 @@ c     NCREAD: reads lines of input and ignores lines that begin with a "#" sign.
 c          All information after a ! is wiped from the input card.
 c     ******************************************************************
       SUBROUTINE NCREAD(Io, Txt, Ierr)
-      USE io
+      USE io_dirs
       IMPLICIT NONE
       EXTERNAL UPCASE, USTOP
 c Arguments

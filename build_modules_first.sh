@@ -1,6 +1,7 @@
 #!/bin/bash
 # Generate the module files
 list='
+swat/iomod.f90
 modflow/mf_gwf2lpf7.f
 modflow/mf_gwf2mnw17_NWT.f
 modflow/mf_gwf2mnw27_NWT.f
@@ -42,7 +43,6 @@ modflow/mf_rt_link.f
 modflow/mf_sip7_NWT.f
 rt3d/rt_modparm.f 
 smrt/smrt_parm.f
-swat/iomod.f90
 swat/modparm.f 
 modflow/mf_de47_NWT.f
 modflow/mf_gwf2bas7_NWT.f

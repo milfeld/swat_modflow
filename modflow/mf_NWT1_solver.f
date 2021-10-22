@@ -851,7 +851,7 @@ C-------STRAIGHT LINE WITH PARABOLIC SMOOTHING
 !      USE SAMGMODULE
       USE ilupc_mod
       USE machine_constants
-      USE io
+      USE io_dirs
       IMPLICIT NONE
 !     ------------------------------------------------------------------
 !     SPECIFICATIONS:

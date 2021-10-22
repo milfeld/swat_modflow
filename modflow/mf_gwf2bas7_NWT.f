@@ -1824,7 +1824,7 @@ C5------RETURN.
       SUBROUTINE SGWF2BAS7OPEN(INUNIT,IOUT,IUNIT,
      1              NIUNIT,VERSION,INBAS,MAXUNIT,MFVNAM)
       USE GLOBAL,     ONLY:CUNIT
-      USE io
+      USE io_dirs
 C     ******************************************************************
 C     OPEN FILES.
 C     ******************************************************************

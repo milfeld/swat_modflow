@@ -18,7 +18,7 @@ C     Specify which modules are to be used
       use GWFUPWMODULE, only: LAYTYPUPW !tcw
       use LMTMODULE, only: ISSMT3D,IUMT3D,ILMTFMT !tcw
       use smrt_parm
-      USE io
+      USE io_dirs
       INCLUDE 'mf_openspec.inc'
 
 

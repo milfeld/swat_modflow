@@ -26,7 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
-      use io, only: data_swat
+      use io_dirs, only: data_swat
       character (len=80) :: titldum
       integer :: eof 
   

@@ -132,7 +132,7 @@
 
 
       use parm
-      use io
+      use io_dirs
 
       character (len=80) :: titldum, snofile
       character (len=13) :: hrufile, chmfile, mgtfile, solfile, gwfile

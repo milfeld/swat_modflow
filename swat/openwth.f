@@ -41,7 +41,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
-      use io
+      use io_dirs
 
       integer :: j, kk1, kk2, k
       character (len=80) :: titldum

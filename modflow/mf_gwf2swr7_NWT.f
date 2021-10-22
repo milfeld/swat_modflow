@@ -11816,6 +11816,7 @@ C     Determine if data should be processed from an internal, external,
 C     or temporary file.
 C     ******************************************************************
         USE GWFSWRMODULE, ONLY: NREACHES, IPTFLG
+        USE io_dirs, only: data_mflow
         IMPLICIT NONE
 C     + + + DUMMY ARGUMENTS + + +
         INTEGER, INTENT(IN)    :: Iswr
@@ -11878,6 +11879,7 @@ C     Read and print a list.  NAUX of the values in the list are
 C     optional -- auxiliary data.
 C     ******************************************************************
         USE GWFSWRMODULE, ONLY: NREACHES, IPTFLG
+        use io_dirs, only: data_mflow
         IMPLICIT NONE
 C     + + + DUMMY ARGUMENTS + + +
         INTEGER, INTENT(IN) :: Iswr

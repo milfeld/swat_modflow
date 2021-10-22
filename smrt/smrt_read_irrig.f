@@ -21,7 +21,7 @@
       use parm
       use smrt_parm !smrt linkage
       use GLOBAL,only:NROW,NCOL,NLAY !MODFLOW
-      use io, only: data_swatmf, data_out
+      use io_dirs, only: data_swatmf, data_out
 
       implicit none
       

@@ -164,7 +164,7 @@
 
 
       use parm
-      use io
+      use io_dirs
 
       character (len=80) :: titldum
       character (len=200) :: lus

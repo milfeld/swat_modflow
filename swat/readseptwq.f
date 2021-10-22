@@ -62,7 +62,7 @@
 !!     of septic documentation. Data were compiled from Siegrist et al, 2005 and McCray et al,2007. 
      
       use parm
-      use io, only: data_swat 
+      use io_dirs, only: data_swat 
 
       character* 4 sptnames(50)
       character*4 sptname

@@ -17,7 +17,7 @@
       use GLOBAL, only: mf_ran,mf_interval !MODFLOW
       use mf_rt_link, only: rt_active !MODFLOW-RT3D Linkage
       use smrt_parm !SWAT-MODFLOW linkage
-      use io, only: data_swatmf, data_out
+      use io_dirs, only: data_swatmf, data_out
       implicit none
       
       integer n

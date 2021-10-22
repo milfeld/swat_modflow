@@ -9,7 +9,7 @@
 !     Import variables
       use GLOBAL, only:LENUNI,ITMUNI,NROW,NCOL !MODFLOW
       use smrt_parm !smrt linkage
-      use io, only: data_swatmf
+      use io_dirs, only: data_swatmf
       implicit none
       
 !     Initialize local variables
