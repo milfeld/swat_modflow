@@ -128,7 +128,21 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y) k=k+1; READ( dataSHM(startWGN(k):endWGN(k)),y )
+#     define iff(x)             if( dataSHM(startWGN(k):endWGN(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       real :: xx, lattan, x1, x2, x3, tav, tmin, tmax, rain_yrs
@@ -348,7 +362,10 @@
         dormhr(ihru) = dl
       end do
 
+#ifndef SHM_IO
       close (114)
+#endif
+
       return
  5000 format (a)
  5100 format (12x,f7.2)

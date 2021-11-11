@@ -35,11 +35,31 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ( dataSHM(startWUS(k):endWUS(k)),y,z )
+#     define iff(x)               if( dataSHM(startWUS(k):endWUS(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       integer :: eof, mon, j
       real :: swupnd(12), swush(12), swudp(12)
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kWUS
+      dataSHM => dataWUS
+#endif
 
       eof = 0
       swupnd = 0.
@@ -48,25 +68,25 @@
 
       do
       read (105,5300,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5300,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5300,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swupnd(mon),mon = 1,6)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swupnd(mon),mon = 7,12)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (wurch(mon,i),mon = 1,6)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (wurch(mon,i),mon = 7,12)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swush(mon),mon = 1,6)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swush(mon),mon = 7,12)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swudp(mon),mon = 1,6)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (105,5100,iostat=eof) (swudp(mon),mon = 7,12)
       exit
       end do
@@ -81,7 +101,9 @@
         end do
       end do
 
+#ifndef SHM_IO
       close (105)
+#endif
 
       return
  5100 format (6f10.1)

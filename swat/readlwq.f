@@ -80,12 +80,32 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ(dataSHM(startLWQ(k):endLWQ(k)),y,z)
+#     define iff(x)              if( dataSHM(startLWQ(k):endLWQ(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       integer :: eof
       character (len=80) :: titldum
       real :: orgpi, solpi, orgni, no3i, nh3i, no2i
       real :: lkarea
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kLWQ
+      dataSHM => dataLWQ
+#endif
 
       eof = 0
       titldum = ""
@@ -99,69 +119,69 @@
 !!    read lake water quality data    
       do 
         read (106,1000,iostat=eof) titldum
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,1000,iostat=eof) titldum
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) ires1(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) ires2(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) psetlr(1,i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) psetlr(2,i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) nsetlr(1,i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) nsetlr(2,i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) chlar(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) seccir(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) orgpi
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) solpi
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) orgni
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) no3i
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) nh3i
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) no2i
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,1000,iostat=eof) titldum
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_conc(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_rea(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_vol(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_koc(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_stl(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_rsp(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkpst_mix(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkspst_conc(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkspst_rea(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkspst_bry(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) lkspst_act(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) theta_n(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) theta_p(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) con_nirr(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (106,*,iostat=eof) con_pirr(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
       exit
       end do
       
@@ -184,7 +204,9 @@
       lkarea = br1(i) * res_vol(i) ** br2(i)
       lkspst_mass(i) = lkspst_conc(i) * lkspst_act(i) * lkarea * 10000.
 
+#ifndef SHM_IO
       close (106)
+#endif
 
       return
  1000 format (a80)

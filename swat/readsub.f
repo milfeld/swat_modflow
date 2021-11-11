@@ -130,9 +130,24 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define open(x,y) call shm_open(y)
+      use  c_shm_api
+#     define read(x,y) k=k+1; READ( dataSHM(startSUB(k):endSUB(k)),y )
+#     define iff(x)             if( dataSHM(startSUB(k):endSUB(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
       use parm
       use io_dirs
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum, snofile
       character (len=13) :: hrufile, chmfile, mgtfile, solfile, gwfile
@@ -140,6 +155,12 @@
 	  character (len=13) :: sdrfile, ltcfile
       integer :: eof, mon, j, jj, ip, if, ir
       real :: ssnoeb(10), sno_sub, ch_ls, sumebfr
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =    kSUB
+      dataSHM => dataSUB
+#endif
 
       wgnfile = ""
       pndfile = ""
@@ -267,7 +288,7 @@
           call caps(gwfile)
           if (septfile /='             ') then
             call caps (septfile)
-            open (172,file=data_sep//septfile, status='old')
+            open (172,file=data_sep//septfile)
             isep_hru(ihru) = 1
             call readsepticbz
           end if
@@ -460,7 +481,10 @@
 	dratio(i) = 0.42 * sub_km(i) ** -0.125
 	if(dratio(i)>0.9) dratio(i) = 0.9
 
+#ifndef SHM_IO
       close (101)
+#endif
+
       return
  1000 format ('ERROR: Elevation Band Fractions in Subbasin ',i4,        
      &        ' do not add up to 100% of subbasin area!')

@@ -58,13 +58,32 @@
 !!    Intrinsic: Exp    
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+#ifdef SHM_IO
+#     define read(x,y) k=k+1; READ(dataSHM(startGW(k):endGW(k)),y)
+#     define iff(x)            if( dataSHM(startGW(k):endGW(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
       use parm
       use smrt_parm
 
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof 
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
+
       character (len=80) :: titldum
       integer :: eof
       real :: hlife_ngw
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kGW
+      dataSHM => dataGW
+#endif
 
       eof = 0
       hlife_ngw = 0.0
@@ -79,21 +98,27 @@
       read (110,*) gw_revap(ihru)
       read (110,*) revapmn(ihru)
       read (110,*) rchrg_dp(ihru)
+
+#ifdef SHM_IO
+#undef  read(x,y  )
+#define read(x,y,z) k=k+1; READ(dataSHM(startGW(k):endGW(k)),y,z)
+#endif
+
       read (110,*,iostat=eof) gwht(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) gw_spyld(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) shallst_n(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) gwminp(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) hlife_ngw
-      if (eof < 0) exit
+      iff (eof < 0) exit
 !! organic n and p in the lateral flow     - by J.Jeong BREC 2011
       read (110,*,iostat=eof) lat_orgn(ihru)         
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) lat_orgp(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (110,*,iostat=eof) alpha_bf_d(ihru)
       exit
       end do
@@ -127,7 +152,10 @@
 !! assign values to channels
       ch_revap(i) = gw_revap(ihru)
 
+#ifndef SHM_IO
       close (110)
+#endif
+
       return
  5000 format (a)
       end

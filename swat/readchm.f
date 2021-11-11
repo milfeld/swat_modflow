@@ -55,40 +55,59 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+#ifdef SHM_IO
+#     define read(x,y,z) kk=kk+1; READ( dataSHM(startCHM(kk):endCHM(kk)),y,z )
+#     define iff(x)                 if( dataSHM(startCHM(kk):endCHM(kk)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
 
       use parm
 
+#ifdef SHM_IO
+      use shm
+      integer*8 :: kk
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
+
       character (len=80) :: titldum
       integer :: j, eof, k, newpest, pstnum
       real :: pltpst, solpst, pstenr
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSI FS (File Separator)
+        kk    =     kCHM
+      dataSHM => dataCHM
+#endif
 
       eof = 0
 
       
       do
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5100,iostat=eof) (sol_no3(j,ihru), j = 1, mlyr)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5100,iostat=eof) (sol_orgn(j,ihru), j = 1, mlyr)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5100,iostat=eof) (sol_solp(j,ihru), j = 1, mlyr)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5100,iostat=eof) (sol_orgp(j,ihru), j = 1, mlyr)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5100,iostat=eof) (pperco_sub(j,ihru), j = 1, mlyr)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (106,5000,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
 !!	end do
 
       do j = 1, mpst
@@ -97,6 +116,7 @@
         solpst = 0.
         pstenr = 0.
         read (106,*,iostat=eof) pstnum, pltpst, solpst, pstenr
+!       read (106,5200,iostat=eof) pstnum, pltpst, solpst, pstenr
         if (pstnum > 0) then
           hrupest(ihru) = 1
           newpest = 0
@@ -119,14 +139,16 @@
           pst_enr(k,ihru) = pstenr
         end if
 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       end do
       exit
    
         
       end do
 
+#ifndef SHM_IO
       close (106)
+#endif
       
       do j = 1, mlyr
         if (pperco_sub(j,ihru) <= 1.e-6) pperco_sub(j,ihru) = pperco
@@ -135,4 +157,11 @@
       return
  5000 format (a)
  5100 format (27x,10f12.2)
+ 5200 format (4x,4f18.2)
       end
+!!    101 Should comment be retained
+!!    108 use 5200 format with ^M lines (certainly for reading stream)
+!                 0.00              0.00              0.00
+!234123456789012345678123456789012345678123456789012345678
+!  ^                 ^                 ^                 ^
+!  4                18                18                18

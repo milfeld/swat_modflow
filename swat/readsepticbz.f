@@ -39,11 +39,30 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ(dataSHM(startSEP(k):endSEP(k)),y,z)
+#     define iff(x)              if( dataSHM(startSEP(k):endSEP(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
       use parm
 
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
+
       character (len=80) :: titldum
 	integer :: eof
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kSEP
+      dataSHM => dataSEP
+#endif
 
 !!    initialize variables
       eof = 0
@@ -53,58 +72,58 @@
       do
         read (172,1000) titldum
 	  read (172,*,iostat=eof) isep_typ(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         if (isep_typ(ihru) <= 0) return
 	  read (172,*,iostat=eof) isep_iyr(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (172,*,iostat=eof) isep_opt(ihru)       
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (172,*,iostat=eof) sep_cap(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (172,*,iostat=eof) bz_area(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (172,*,iostat=eof) isep_tfail(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) bz_z(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) bz_thk(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (172,*,iostat=eof) sep_strm_dist(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (172,*,iostat=eof) sep_den(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (172,*,iostat=eof) bio_bd(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_bod_dc(ihru)
-	  if (eof < 0) exit   
+	  iff (eof < 0) exit   
         read (172,*,iostat=eof) coeff_bod_conv(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_fc1(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_fc2(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_fecal(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_plq(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_mrt(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_rsp(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_slg1(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_slg2(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_nitr(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_denitr(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_pdistrb(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_psorpmax(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_solpslp(ihru)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
         read (172,*,iostat=eof) coeff_solpintc(ihru)
 	  exit
 	end do
@@ -137,8 +156,10 @@
       if (coeff_nitr(ihru) <= 1.e-6) coeff_nitr(ihru) = 0.086
       if (coeff_denitr(ihru) <= 1.e-6) coeff_denitr(ihru) = 0.00432
 
-      
+#ifndef SHM_IO
       close (172)
+#endif
+      
 1000  format (a)
       return
       end

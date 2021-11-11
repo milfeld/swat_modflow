@@ -293,8 +293,22 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y) k=k+1; READ( dataSHM(startMGT(k):endMGT(k)),y )
+#     define iff(x)             if( dataSHM(startMGT(k):endMGT(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
       use io_dirs, only: data_swat, data_out
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       integer :: eof,dum,opnum,k,cobb_model
@@ -304,6 +318,12 @@
       real :: husc, mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
       real :: disc
       integer auto_yes
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kMGT
+      dataSHM => dataMGT
+#endif
 
       real,dimension(:), allocatable::cobb_phu
       integer,dimension(:), allocatable::cobb_mgtop
@@ -358,6 +378,10 @@
       read (109,5000) titldum 
       read (109,5000) titldum
 
+#ifdef SHM_IO
+#undef  read(x,y  )
+#define read(x,y,z) k=k+1; READ(dataSHM(start(k):end(k)),y,z)
+#endif
 
 !!    set pothole trigger
 !    if (ipot(ihru) == ihru) then
@@ -451,7 +475,7 @@
           mgt9 = 0.
           read (109,5200,iostat=eof) mon, day, husc, mgt_op, mgt1i,     
      &          mgt2i, mgt3i, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, mgt10i
-          if (eof < 0) then
+          iff (eof < 0) then
             if (mgt_opprev /= 17 .and. mgt_opprev /= 0) then
               iop = iop + 1
               mgtop(iop,ihru) = 17
@@ -462,7 +486,10 @@
             end if
           end if
           if (mgt_opprev + mgt_op == 0) then
+
+#ifndef SHM_IO
               close (109)
+#endif
               if(auto_yes.eq.1) then
                 write(100009,*) ihru
               endif
@@ -475,7 +502,10 @@
               return
           endif
           if (mgt_opprev == 17 .and. mgt_op == 0) then
+
+#ifndef SHM_IO
               close (109)
+#endif
 
               !rtb - only for Fort Cobb simulation
               if(cobb_model.eq.1) then

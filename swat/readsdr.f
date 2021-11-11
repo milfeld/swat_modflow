@@ -66,32 +66,54 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ( dataSHM(startSDR(k):endSDR(k)),y,z )
+#     define iff(x)               if( dataSHM(startSDR(k):endSDR(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
 	integer :: eof
 	integer :: mon, day, mgt_op, mgt2i, mgt1i
 	real :: mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
 
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kSDR
+      dataSHM => dataSDR
+#endif
+
       do
 	  read (112,5000,iostat=eof) titldum
-        if (eof < 0) exit
+        iff (eof < 0) exit
 !!      read scheduled operations
         read (112,*,iostat=eof) re(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (112,*,iostat=eof) sdrain(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (112,*,iostat=eof) drain_co(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (112,*,iostat=eof) pc(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
 	    read (112,*,iostat=eof) latksatf(ihru)
-	    if (eof < 0) exit        
+	    iff (eof < 0) exit        
 	    read (112,*,iostat=eof) sstmaxd(ihru)
-        if (eof < 0) exit       
+        iff (eof < 0) exit       
       end do
       
+#ifndef SHM_IO
       close (112)
+#endif
 
       return
  5000 format (a)

@@ -110,14 +110,33 @@
 !!    Intrinsic: Exp, Sin, Atan
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+#ifdef SHM_IO
+#     define read(x,y) k=k+1; READ( dataSHM(startHRU(k):endHRU(k)),y )
+#     define iff(x)             if( dataSHM(startHRU(k):endHRU(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
 
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       integer :: eof
       real :: xm, sin_sl, epcohru, escohru
       real :: r2adjhru !D. Moriasi 4/4/2014    
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+      k       =     kHRU
+      dataSHM => dataHRU
+#endif
 
       eof = 0
       escohru = 0.
@@ -133,90 +152,96 @@
       read (108,*) lat_ttime(ihru) 
       read (108,*) lat_sed(ihru)   !read in in mg/L
       read (108,*) slsoil(ihru)
+
+#ifdef SHM_IO
+#     undef  read(x,y  )
+#     define read(x,y,z) k=k+1; READ(dataSHM(startHRU(k):endHRU(k)),y,z)
+#endif
+
       read (108,*,iostat=eof) canmx(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) escohru
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) epcohru 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) rsdin(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) erorgn(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) erorgp(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) pot_fr(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) fld_fr(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) rip_fr(ihru) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
 !      if (ipot(ihru) == ihru) then   Srini pothole
         read (108,*,iostat=eof) pot_tilemm(ihru)    !!NUBZ
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_volxmm(ihru) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_volmm(ihru) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_nsed(ihru) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_no3l(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
-!        if (eof < 0) exit
+!        iff (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
-!        if (eof < 0) exit
+!        iff (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
-!        if (eof < 0) exit
+!        iff (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
-!        if (eof < 0) exit
+!        iff (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
-!        if (eof < 0) exit
+!        iff (eof < 0) exit
 !      end if
       read (108,*,iostat=eof) dep_imp(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,5100,iostat=eof) titldum       
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,5100,iostat=eof) titldum      
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,5100,iostat=eof) titldum           
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) evpot(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (108,*,iostat=eof) dis_stream(ihru)
-      if (eof < 0) exit
+      iff (eof < 0) exit
 !! armen & stefan changes for SWAT-C
 	read (108,*,iostat=eof) cf(ihru)
-	if (eof < 0) exit
+	iff (eof < 0) exit
 	read (108,*,iostat=eof) cfh(ihru)
-	if (eof < 0) exit
+	iff (eof < 0) exit
 	read (108,*,iostat=eof) cfdec(ihru)
-	if (eof < 0) exit
+	iff (eof < 0) exit
         read (108,*,iostat=eof) sed_con(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) orgn_con(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) orgp_con(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) soln_con(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) solp_con(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_solpl(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) pot_k(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) n_reduc(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) n_lag(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) n_ln(ihru)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) n_lnco(ihru)
 !-------------------------------------------------------Moriasi 4/8/2014        
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (108,*,iostat=eof) surlag(ihru)   
 !-------------------------------------------------------Moriasi 4/8/2014 
         read (108,*,iostat=eof) r2adj(ihru) !Soil retention parameter D. Moriasi 4/8/2014 
@@ -284,7 +309,10 @@
 	pot_sag(ihru) = 0. 
 	pot_lag(ihru) = 0. 
 
+#ifndef SHM_IO
       close (108)
+#endif
+
       return
  5100 format (a)
       end

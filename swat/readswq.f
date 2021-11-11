@@ -78,85 +78,104 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ(dataSHM(startSWQ(k):endSWQ(k)),y,z)
+#     define iff(x)              if( dataSHM(startSWQ(k):endSWQ(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
       use parm
 
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
+
       character (len=80) :: titldum
       integer :: eof
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kSWQ
+      dataSHM => dataSWQ
+#endif
 
       eof = 0
 
       do
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs1(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs2(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs3(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs4(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs5(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs6(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rs7(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk1(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk2(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk3(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk4(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk5(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) rk6(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) bc1(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) bc2(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) bc3(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) bc4(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_rea(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_vol(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_koc(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_stl(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_rsp(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) chpst_mix(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sedpst_conc(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sedpst_rea(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sedpst_bry(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sedpst_act(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_mumax(irch)
-!      if (eof < 0) exit
+!      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_kinv(irch)
-!      if (eof < 0) exit
+!      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_klw(irch)
-!      if (eof < 0) exit
+!      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_kla(irch)
-!      if (eof < 0) exit
+!      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_cdet(irch)
-!      if (eof < 0) exit
+!      iff (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_bm(irch)
       exit
       end do
@@ -213,7 +232,10 @@
         bc4(irch) = bc4(irch) / 24.
       end if
 
+#ifndef SHM_IO
       close (104)
+#endif
+
       return
  5100 format (a)
       end

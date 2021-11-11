@@ -111,13 +111,33 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+#     define read(x,y,z) k=k+1; READ( dataSHM(startRES(k):endRES(k)),y,z )
+#     define iff(x)               if( dataSHM(startRES(k):endRES(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
       use parm
-      use io_dirs
+      use io_dirs, only: data_swat
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       character (len=13) :: resdayo, resmono
       integer :: eof, mon, j
       real :: resdif, targ, lnvol, res_d50
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kRES
+      dataSHM => dataRES
+#endif
 
 !!    initialize local variables
       resdayo = ""
@@ -128,101 +148,105 @@
 !!    read in data from .res file
       do
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_sub(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) mores(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) iyres(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_esa(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_evol(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_psa(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_pvol(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_vol(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_sed(i) 
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_nsed(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_d50
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_k(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) iresco(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (oflowmx(mon,i), mon = 1, 6)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (oflowmx(mon,i), mon = 1, 6)
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (oflowmx(mon,i), mon = 7, 12)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (oflowmx(mon,i), mon = 7, 12)
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (oflowmn(mon,i), mon = 1, 6)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (oflowmn(mon,i), mon = 1, 6)
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (oflowmn(mon,i), mon = 7, 12)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (oflowmn(mon,i), mon = 7, 12)
+        iff (eof < 0) exit
         read (105,*,iostat=eof) res_rr(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,1100,iostat=eof) resmono
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) iflod1r(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) iflod2r(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) ndtargr(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (starg(mon,i), mon = 1, 6)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (starg(mon,i), mon = 1, 6)
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (starg(mon,i), mon = 7, 12)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (starg(mon,i), mon = 7, 12)
+        iff (eof < 0) exit
         read (105,1100,iostat=eof) resdayo
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (wuresn(mon,i), mon = 1, 6)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (wuresn(mon,i), mon = 1, 6)
+        iff (eof < 0) exit
         read (105,1000,iostat=eof) titldum
-        if (eof < 0) exit
-        read (105,*,iostat=eof) (wuresn(mon,i), mon = 7, 12)
-        if (eof < 0) exit
+        iff (eof < 0) exit
+        read (105,5100,iostat=eof) (wuresn(mon,i), mon = 7, 12)
+        iff (eof < 0) exit
         read (105,*,iostat=eof) wurtnf(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) evrsv(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) oflowmn_fps(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) starg_fps(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) nostep
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) weirc(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) weirk(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) weirw(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) acoef(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) bcoef(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         read (105,*,iostat=eof) ccoef(i)
-        if (eof < 0) exit
+        iff (eof < 0) exit
         exit
       end do
+
+#ifdef SHM_IO
+#undef read(x,y,z)
+#endif
 
 !!    set default values
       if (res_sub(i) <= 0) res_sub(i) = 1
@@ -341,9 +365,12 @@
         close (101)
       end if
 
+#ifndef SHM_IO
       close (105)
+#endif
 
       return
  1000 format (a80)
  1100 format (a13)
+ 5100 format (6f10.1)
       end

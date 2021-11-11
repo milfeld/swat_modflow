@@ -162,9 +162,31 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+!! If  dpd, wpd, rib, sfb and lid files are added to shm_io then the open
+!! replacement (call shm_open() should be included in the ifdef region:
+!! #define open(x,y) call shm_open(y)
+
+#ifdef SHM_IO
+! backspace should just go back 1 line (k=k-1). Problem: SWAT uses  backspace(#) and backspace #
+! macro trick: single macro handles backspace(#) or backspace # -> k=k-1 ; kdummy=(#) | kdummy=#
+#     define backspace k=k-1 ; kdummy=  
+
+#     define read(x,y,z) k=k+1; READ( dataSHM(startPND(k):endPND(k)),y,z )
+#     define iff(x)               if( dataSHM(startPND(k):endPND(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
+
 
       use parm
-      use io_dirs
+      use io_dirs, only: data_swat
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       character (len=200) :: lus
@@ -175,6 +197,12 @@
       real :: sn1, sn2, snw1, snw2, schla, schlaw, sseci, sseciw
       real :: spno3, spsolp, sporgn, sporgp, swno3, swsolp, sworgn
       real :: sworgp, sub_ha, velsetlpnd
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kPND
+      dataSHM => dataPND
+#endif
 
       eof = 0
       spndfr = 0.
@@ -227,55 +255,55 @@
 
       do
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndfr
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndpsa
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndpv
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndesa
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndev
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndv
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spnds
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndns
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spndk
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sifld1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sifld2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sndt
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sp1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sp2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sn1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sn2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) schla
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sseci
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spno3
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spsolp
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sporgn
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sporgp
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       if (titldum == '             '.or.titldum == 'Inputs used in')then 
         vselsetlpnd = 10.0
       else
@@ -285,69 +313,73 @@
         velsetlpnd = 24. * 411. * pnd_d50mm ** 2.
       endif    
       read (104,*,iostat=eof) spnd1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) spnd2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5100,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetfr
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetnsa
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetnv
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetmsa
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetmv
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetv
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swets
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetns
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swetk
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sw1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sw2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) snw1
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) snw2
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) schlaw
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sseciw
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swno3
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) swsolp
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sworgn
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) sworgp
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) pndevcoeff
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) wetevcoeff
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5101,iostat=eof) dpd_file
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5101,iostat=eof) wpd_file
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5101,iostat=eof) rib_file
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,*,iostat=eof) titldum
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (104,5101,iostat=eof) sfb_file
+
+#ifndef SHM_IO
       close (104)
+#endif
+#undef backspace
 
       !! Detention pond  -- read from a separate file (.dpd)
       if (dpd_file /= '             ' .and. ievent > 0) then
