@@ -177,7 +177,6 @@
 #     define iff(x) if( x )
 #endif
 
-
       use parm
       use io_dirs, only: data_swat
 

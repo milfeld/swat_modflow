@@ -81,12 +81,31 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
+#ifdef SHM_IO
+#     define read(x,y) k=k+1; READ( dataSHM(startRTE(k):endRTE(k)),y )
+#     define iff(x)             if( dataSHM(startRTE(k):endRTE(k)) == shm_eof )
+#else
+#     define iff(x) if( x )
+#endif
 
       use parm
+
+#ifdef SHM_IO
+      use shm
+      integer*8 :: k
+      character :: shm_eof
+      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
+#endif
 
       character (len=80) :: titldum
       integer :: eof
 	  real :: bnksize, bedsize
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kRTE
+      dataSHM => dataRTE
+#endif
   
       eof = 0
       do
@@ -98,40 +117,46 @@
       read (103,*) ch_n(2,irch) 
       read (103,*) ch_k(2,irch) 
       read (103,*) ch_cov1(irch) 
+
+#ifdef SHM_IO
+#     undef  read(x,y  )
+#     define read(x,y,z) k=k+1; READ( dataSHM(startRTE(k):endRTE(k)),y,z)
+#endif
+
       read (103,*,iostat=eof) ch_cov2(irch) 
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (103,*,iostat=eof) ch_wdr(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (103,*,iostat=eof) alpha_bnk(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (103,*,iostat=eof) icanal(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (103,*,iostat=eof) ch_onco(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
       read (103,*,iostat=eof) ch_opco(irch)
-      if (eof < 0) exit
+      iff (eof < 0) exit
 	  read (103,*,iostat=eof) chside(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,*,iostat=eof) ch_bnk_bd(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (103,*,iostat=eof) ch_bed_bd(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,*,iostat=eof) ch_bnk_kd(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,*,iostat=eof) ch_bed_kd(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,*,iostat=eof) ch_bnk_d50(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,*,iostat=eof) ch_bed_d50(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (103,5000,iostat=eof) tc_bnk(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (103,5000,iostat=eof) tc_bed(irch)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
       read (103,5100,iostat=eof) (ch_erodmo(irch,mo), mo = 1,12)
-	  if (eof < 0) exit
+	  iff (eof < 0) exit
 	  read (103,*,iostat=eof) ch_eqn(irch)
-        if (eof < 0) exit
+        iff (eof < 0) exit
 	  read (103,*,iostat=eof) prf(irch)
       exit
       end do
@@ -309,7 +334,10 @@
       ch_si(irch) = ch_s(2,irch)
       ch_wi(irch) = ch_w(2,irch)
 
+#ifndef SHM_IO
       close (103)
+#endif
+
       return
 5000  format (a)
 5100  format (12f6.2)

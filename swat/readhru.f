@@ -110,13 +110,13 @@
 !!    Intrinsic: Exp, Sin, Atan
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
 #ifdef SHM_IO
 #     define read(x,y) k=k+1; READ( dataSHM(startHRU(k):endHRU(k)),y )
 #     define iff(x)             if( dataSHM(startHRU(k):endHRU(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
-
 
       use parm
 
