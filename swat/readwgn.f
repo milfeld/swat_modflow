@@ -151,6 +151,11 @@
       real :: tmpsoil, sffc, rndm1, dl
       integer :: mon, mdays, j, m1, nda, xrnd
 
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         k    =     kWGN
+      dataSHM => dataWGN
+#endif
 
       pcpd = 0.
       rainhhmx = 0.

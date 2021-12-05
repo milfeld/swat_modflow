@@ -140,7 +140,7 @@
 #endif
 
       use parm
-      use io_dirs
+      use io_dirs, only: data_swat
 
 #ifdef SHM_IO
       use shm
@@ -495,3 +495,9 @@
  5400 format (i4,6f8.3)
  5500 format (2i4)
       end
+!! 282 NOTE
+!!   read (101,5300) hrufile, mgtfile, solfile, chmfile, gwfile, opsfile, septfile, sdrfile, ils2(ihru)
+!!   in xxxxxyyyy.sub space for i6 ends at 8x13
+!! 291
+!!  Changed open (172,file=data_dir//septfile, status='old')
+!!      To  open (172,file=data_dir//septfile)  
