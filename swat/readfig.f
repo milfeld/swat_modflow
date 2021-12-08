@@ -108,9 +108,14 @@
 
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+#ifdef SHM_IO
+      use  c_shm_api
+#endif
+
 
       use parm
-      use io_dirs
+      use io_dirs, only: data_swat, data_out,  
+     &                   data_sub,data_rte,data_swq,data_res,data_lwq
 
       character (len=80) :: titldum
       character (len=1) ::  a
@@ -189,6 +194,9 @@
             case (0)  !! icode = 0  FINISH command
              exit
 
+#ifdef SHM_IO
+#     define open(x,y) call shm_open(y)
+#endif
             case (1)  !! icode = 1  SUBBASIN command
               subtot = subtot + 1
               subgis(inum1s(idum)) = inum4s(idum)
@@ -237,6 +245,10 @@
               end if
             !! lake water quality default values
               call lwqdef
+
+#ifdef SHM_IO
+#undef read(x,y)
+#endif
  
             case (4)  !! icode = 4  TRANSFER command: read in beg/end month
               read (102,5004) mo_transb(inum5s(idum)),    

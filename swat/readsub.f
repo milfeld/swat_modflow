@@ -140,7 +140,8 @@
 #endif
 
       use parm
-      use io_dirs, only: data_swat
+      use io_dirs, only: data_swat, data_wgn,data_pnd,data_wus,data_sep,
+     &             data_sdr,data_chm,data_sol,data_hru,data_mgt,data_gw 
 
 #ifdef SHM_IO
       use shm

@@ -21,7 +21,7 @@ SUBDIRS := $(wildcard */.)
 subobjall: $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@
-#
+
 #.PHONY: subobjall $(SUBDIRS)
 
 #${FC} ${ARCH64} -fopenmp -I${MKLROOT}/include $^ -static -Wl,-L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -L/usr/lib64 -lpthread -lm -ldl  -o $@ 
@@ -33,7 +33,7 @@ all: $(subobjall) $(S_OBJ) $(PROJ_NAME)
 
 $(PROJ_NAME): $(S_OBJ)
 	@echo Linking objects...
-	${FC} ${DISABLE} ${ARCH64} -fopenmp -mkl $^ -o $@ 
+	${FC} ${DISABLE} ${ARCH64} -fopenmp -mkl -fpp $^ -o $@ 
 
 %.o: %.f*
 	@echo Compiling and generating object $@ ...
