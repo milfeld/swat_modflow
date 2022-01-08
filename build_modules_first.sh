@@ -1,7 +1,8 @@
 #!/bin/bash
 # Generate the module files
+
+#swat/io_mod.f90
 list='
-swat/io_mod.f90
 swat/shm_mod.f90
 modflow/mf_gwf2lpf7.f
 modflow/mf_gwf2mnw17_NWT.f
