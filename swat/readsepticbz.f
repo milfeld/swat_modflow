@@ -70,7 +70,7 @@
 
 !! read septic parameters
       do
-        read (172,1000) titldum
+        read (172,1000,iostat=eof) titldum
 	  read (172,*,iostat=eof) isep_typ(ihru)
 	  iff (eof < 0) exit
         if (isep_typ(ihru) <= 0) return

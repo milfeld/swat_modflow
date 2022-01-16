@@ -248,6 +248,7 @@
 
 #ifdef SHM_IO
 #undef read(x,y)
+#undef open(x,y)
 #endif
  
             case (4)  !! icode = 4  TRANSFER command: read in beg/end month

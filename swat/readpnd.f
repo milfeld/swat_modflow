@@ -528,7 +528,8 @@
 	end do 
 	if (num_noirr(i)>0) then
 	   backspace(104)
-	   read (104,*) (ri_nirr(i,k), k=1,num_noirr(i))
+!!KFM	   read (104,*) (ri_nirr(i,k), k=1,num_noirr(i))
+	   read (104,*,iostat=eof) (ri_nirr(i,k), k=1,num_noirr(i))
          if (eof < 0) exit
       end if
      

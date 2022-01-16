@@ -1,49 +1,62 @@
 PROJ_NAME=SWAT_MODFLOW_rel64
-CC=mpicc
+
+ CC=mpicc
+ FC=mpif90
+
+#CC=gcc
 #FC=gfortran
-FC=mpif90
-FOR_FILES=$(shell find . -name "*.f*")
-MOD_FILES=$(shell find . -name "*.mod*")
-S_OBJ=$(patsubst %.f*, %.o, $(FOR_FILES))
 
-DISABLE="-diag-disable 8291,10006"
+ IO = -DSHM_IO  -fpp  #comment this line for standard (POSIX) IO
 
-FFLAG=-c -standard-semantics -fmessage-length=0 -ffixed-line-length-80  -funderscoring -fbacktrace -ffpe-trap=invalid,zero,overflow
-RFLAG=-O3
-LONGFIX=-ffixed-line-length-132
-LONGFREE=-ffree-line-length-200
-ARCH32=-m32
-ARCH64=-m64
-#CXXFLAGS=-c -g -Wall 
-CXXFLAGS= -c
-SUBDIRS := $(wildcard */.)
+ NO_DIAG="-diag-disable 8291,10006"
 
-subobjall: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@
+   FFLAG=-c -standard-semantics -fmessage-length=0 -ffixed-line-length-80  -funderscoring -fbacktrace -ffpe-trap=invalid,zero,overflow
+   RFLAG=-O3
+ LONGFIX=-ffixed-line-length-132
+ LONGFREE=-ffree-line-length-200
+   ARCH64=-m64
 
-#.PHONY: subobjall $(SUBDIRS)
+#MOD_SRC=$(shell find . -name '*mod.f*' -exec basename {} \; ) # Find all module (...mod.f*) files
+#MOD_TMP=$(patsubst %.f,   %.o, $(MOD_SRC))                    # .f   -> .o
+#MOD_OBJ=$(patsubst %.f90, %.o, $(MOD_TMP))                    # .f90 -> .o
 
-#${FC} ${ARCH64} -fopenmp -I${MKLROOT}/include $^ -static -Wl,-L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -L/usr/lib64 -lpthread -lm -ldl  -o $@ 
-#all: $(subobjall) $(PROJ_NAME)
-all: $(subobjall) $(S_OBJ) $(PROJ_NAME)
-	@echo Compiling Application $(PROJ_NAME)
-	@echo
-	#@./$(PROJ_NAME)
+ SRC=$(shell find . -name '*.f*' -exec basename {} \; | grep -v 'mod.f' ) # All *.f* files (non *mod.f*)
+ TMP=$(patsubst %.f,   %.o, $(SRC))                                       # .f   -> .o
+ OBJ=$(patsubst %.f90, %.o, $(TMP))                                       # .f90 -> .o
 
-$(PROJ_NAME): $(S_OBJ)
-	@echo Linking objects...
-	${FC} ${DISABLE} ${ARCH64} -fopenmp -mkl -fpp $^ -o $@ 
+ C_SRC=$(shell find . -name '*.c' -exec basename {} \; ) # All C files (.c)
+ C_OBJ=$(patsubst %.c, %.o, $(C_SRC))
 
-%.o: %.f*
+ VPATH = swat:smrt:modflow:rt3d
+
+$(PROJ_NAME): $(C_OBJ) $(MOD_OBJ) $(OBJ)
+	@echo LINKING
+	${FC} ${NO_DIAG} ${IO} ${ARCH64}               -fopenmp -mkl -fpp $^ -o $@ 
+
+%.o: %.f90
 	@echo Compiling and generating object $@ ...
-	${FC} ${DISABLE} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFREE} ${LONGFREE} $< $(CXXFLAGS) -o $@
-
-main.o: main.f
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG}             $^
+%.o: %.f
 	@echo Compiling and generating object $@ ...
-	${FC} ${DISABLE} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFIX} main.f -o main.o 
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFREE} $^
+
+%main.o: %main.f
+	@echo Compiling and generating object $@ ...
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFIX}  $^
+
+%.o: %.c
+	@echo compiling $@ ...
+	${CC} -c  $^
 
 clean:
 	@echo Removing secondary things
 	@rm -f *.o $(PROJ_NAME)
 	@echo Done!
+
+clean_all:
+	@echo Removing secondary things
+	@rm -f       ./*.o       ./*.mod  a.out
+	@rm -f    swat/*.o    swat/*.mod
+	@rm -f    smrt/*.o    smrt/*.mod
+	@rm -f    rt3d/*.o    rt3d/*.mod
+	@rm -f modflow/*.o modflow/*.mod
