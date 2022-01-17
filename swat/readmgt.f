@@ -294,8 +294,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y) k=k+1; READ( dataSHM(startMGT(k):endMGT(k)),y )
-#     define iff(x)             if( dataSHM(startMGT(k):endMGT(k)) == shm_eof )
+#     define read(x,y) kk=kk+1; READ( dataSHM(startMGT(kk):endMGT(kk)),y )
+#     define iff(x)               if( dataSHM(startMGT(kk):endMGT(kk)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -305,7 +305,7 @@
 
 #ifdef SHM_IO
       use shm
-      integer*8 :: k
+      integer*8 :: kk
       character :: shm_eof
       character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
@@ -319,15 +319,15 @@
       real :: disc
       integer auto_yes
 
-#ifdef SHM_IO
-      shm_eof = achar(28)  ! ANSII FS (File Separator)
-         k    =     kMGT
-      dataSHM => dataMGT
-#endif
-
       real,dimension(:), allocatable::cobb_phu
       integer,dimension(:), allocatable::cobb_mgtop
       real,dimension(:,:), allocatable::cobb_ops
+
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         kk   =     kMGT
+      dataSHM => dataMGT
+#endif
 
       !for Fort Cobb simulation
       cobb_model = 5
