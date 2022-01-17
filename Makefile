@@ -20,7 +20,8 @@ PROJ_NAME=SWAT_MODFLOW_rel64
 #MOD_TMP=$(patsubst %.f,   %.o, $(MOD_SRC))                    # .f   -> .o
 #MOD_OBJ=$(patsubst %.f90, %.o, $(MOD_TMP))                    # .f90 -> .o
 
- SRC=$(shell find . -name '*.f*' -exec basename {} \; | grep -v 'mod.f' ) # All *.f* files (non *mod.f*)
+#SRC=$(shell find . -name '*.f*' -exec basename {} \; | grep -v 'mod.f' ) # All *.f* files (non *mod.f*)
+ SRC=$(shell find . -name '*.f*' -exec basename {} \; ) # All *.f* files (non *mod.f*)
  TMP=$(patsubst %.f,   %.o, $(SRC))                                       # .f   -> .o
  OBJ=$(patsubst %.f90, %.o, $(TMP))                                       # .f90 -> .o
 
