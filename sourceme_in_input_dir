@@ -1,0 +1,25 @@
+# This file should stay in the SWAT_HOME directory.
+# It sets up the environment for the IO.
+# It should be sourced from Data Directory
+#  This file must be sourced from the data directory: 
+
+#     cd <top-level_data_directory>
+#     source $SWAT_HOME/sourceme_input_dirs
+
+#export SWAT_DEBUG_READ_META=1
+# swat/shm_C_API.c
+
+
+# Environment variables set  the top level path for the files:
+#     SWAT_DATA     swat_data_dir
+#     SWAT_OUTPUT   swat_out_dir
+
+#     SWAT_CONF     swat_conf_dir not implemented
+#     SWAT_WORK     swat_work_dir not implemented
+
+   echo " -> Setting Data Variable:"
+   echo "       SWAT_DATA=`pwd`"
+   echo " ->    SWAT_OUTPUT=`pwd`"
+
+   export    SWAT_DATA=`pwd`
+   export  SWAT_OUTPUT=`pwd`

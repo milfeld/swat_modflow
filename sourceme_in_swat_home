@@ -1,0 +1,18 @@
+# Source this file in the home directory of SWAT.
+# (the directory that contains the executable or bin/executable)
+
+# Sets SWAT_HOME and preappends $PWD to PATH
+
+  echo " -> Setting SWAT_HOME to `pwd`
+  export SWAT_HOME=`pwd`
+
+  # There should only be one $SWAT_TOP_DIR in PATH
+  if [[ $PATH =~ "/$SWAT_TOP_DIR" ]]; then
+    echo " -> Hmm.  PATH already has a $SWAT_TOP_DIR directory in its list."
+    echo " -> Removing it, and prepending PATH with `pwd`."
+    tmp=$(echo $PATH | sed s@[^:]\.*shm:@@)
+    export PATH=`pwd`:$tmp
+  else
+    echo " -> Prepending PATH with `pwd`."
+    export PATH=`pwd`:$PATH
+  fi
