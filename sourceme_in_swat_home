@@ -3,7 +3,9 @@
 
 # Sets SWAT_HOME and preappends $PWD to PATH
 
-  echo " -> Setting SWAT_HOME to `pwd`
+  SWAT_TOP_DIR=swat_modflow
+
+  echo " -> Setting SWAT_HOME to `pwd`"
   export SWAT_HOME=`pwd`
 
   # There should only be one $SWAT_TOP_DIR in PATH
