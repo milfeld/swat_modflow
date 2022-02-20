@@ -104,30 +104,31 @@ yes_no=${yes_no:-no}
 echo " -- answ: $yes_no"
 mv_numbered_files=$yes_no
 
-echo " -> numbered files --start: `date`"
-
 if [[ $mv_numbered_files == yes ]]; then
-   echo " -->                            This may take some time (${types[@]} files x ~20s/file)"
+   echo " -> numbered files --start: `date`"
+   
+   if [[ $mv_numbered_files == yes ]]; then
+      echo " -->                            This may take some time (${types[@]} files x ~20s/file)"
+      for suffix in ${types[@]}; do
+        echo "                                        Working on $suffix"
+        rm -rf data_$suffix
+        mkdir  data_$suffix
+        mv *[0-9].$suffix data_$suffix
+        #cd     data_$suffix
+        #tar xf $DIR/swat_data.tar "*[0-9].$suffix"
+        #cd ..
+      done
+   fi
+   
+   
    for suffix in ${types[@]}; do
-     echo "                                        Working on $suffix"
-     rm -rf data_$suffix
-     mkdir  data_$suffix
-     mv *[0-9].$suffix data_$suffix
-     #cd     data_$suffix
-     #tar xf $DIR/swat_data.tar "*[0-9].$suffix"
-     #cd ..
+     non_NF=$(/bin/ls -1 data_$suffix | egrep -v  ".*[0-9].$suffix" | wc -l)
+         NF=$(/bin/ls -1 data_$suffix | wc -l)
+     printf " --> File count: #########.%-3s = %5d,  others = %5d\n" $suffix  $NF $non_FN
    done
+   
+   echo " -> numbered files --  end: `date`"
 fi
-
-
-for suffix in ${types[@]}; do
-  non_NF=$(/bin/ls -1 data_$suffix | egrep -v  ".*[0-9].$suffix" | wc -l)
-      NF=$(/bin/ls -1 data_$suffix | wc -l)
-  printf " --> File count: #########.%-3s = %5d,  others = %5d\n" $suffix  $NF $non_FN
-done
-
-echo " -> numbered files --  end: `date`"
-
 
 echo " ------------------------- End of numbered file sorting ------------------------"
 
