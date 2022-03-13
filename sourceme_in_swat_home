@@ -5,8 +5,11 @@
 
   SWAT_TOP_DIR=swat_modflow
 
-  echo " -> Setting SWAT_HOME to `pwd`"
   export SWAT_HOME=`pwd`
+  export SWAT_TOP_DIR=`basename $SWAT_HOME`
+  echo " -> Set SWAT_HOME to `pwd`"
+  echo " -> Set SWAT_TOP_DIR to $SWAT_TOP_DIR"
+
 
   # There should only be one $SWAT_TOP_DIR in PATH
   if [[ $PATH =~ "/$SWAT_TOP_DIR" ]]; then
