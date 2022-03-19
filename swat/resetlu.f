@@ -32,7 +32,7 @@
       use parm
 	character(len=80) :: titldum
 
-      open (9123,file=fname(no_lup))
+      open (9123,file=data_swat//fname(no_lup))
       read (9123, 5101) titldum
       do j = 1, mhru
 	   read (9123,*,end=99) hru, hru_fr(j)

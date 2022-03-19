@@ -500,5 +500,5 @@
 !!   read (101,5300) hrufile, mgtfile, solfile, chmfile, gwfile, opsfile, septfile, sdrfile, ils2(ihru)
 !!   in xxxxxyyyy.sub space for i6 ends at 8x13
 !! 291
-!!  Changed open (172,file=data_dir//septfile, status='old')
-!!      To  open (172,file=data_dir//septfile)  
+!!  Changed open (172,file=data_sep//septfile, status='old')
+!!      To  open (172,file=data_sep//septfile)  
