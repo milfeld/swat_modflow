@@ -78,6 +78,7 @@ t0=gtod_timer();
                       data_sz,
                       file_ct);
 t1=gtod_timer();
+
 //  printf(" ->  Done:      data in shared mem (%11ld B)\n", \
 //                                   shm_data_sizeB);
     printf(" ->  Reserved storage for data     (%11ld B)\n", \
@@ -128,13 +129,10 @@ long put_shm_data(
 
    directory = opendir (Data_dir);    // Directory in shared_mem.h
                                        if(directory == NULL) exit(1);
-//                               N_TYPES
-// Breaks with 12 thread.
+
   #pragma omp parallel num_threads(N_TYPES) reduction( + : shm_data_size )
-//#pragma omp parallel num_threads(1) reduction( + : shm_data_size )
  {
   int itype = omp_get_thread_num();
-//int itype = 11;
 
   char  shm_data_p_name[128];   // only needs 14, just in case "swat_data" name is changed, using 128
 
@@ -252,6 +250,7 @@ long put_shm_data(
 
 printf("THREAD %d   SIZE %ld\n",itype,total_p_size);
 
+
  }  //end OMP parallel block
 
     return shm_data_size;
@@ -289,7 +288,6 @@ long put_shm_meta(int  file_ct[N_TYPES],
    *ptr++='_';
    strcpy(ptr, file_suffixes[itype]);
 
- //printf("META_SIZE=%ld(B)  %ld(element)  name:%s \n",meta_bsize, meta_bsize/sizeof(long), shm_data_name );
    printf("META_SIZE=%ld(B)  %ld(element) pname:%s \n",meta_bsize, meta_bsize/sizeof(long), shm_meta_p_name );
 
    shm_meta_fd = shm_open(shm_meta_p_name, (int)(O_CREAT | O_RDWR), (mode_t)0666);
@@ -314,13 +312,12 @@ long put_shm_meta(int  file_ct[N_TYPES],
          */
           //for(int k=0;k<ndx_size;k++){ printf("  %8ld   Offndx=%ld\n",k,Offndx[k]);}
 
-//        printf("  type=%2d  lcnt=%5d  meta_bsize=%7d  sizeof(long)=%2d  ndx_size=%6d  set_size=%6d \n",
           printf("  type=%2d  lcnt=%5d  meta_bsize=%8d  sizeof(long)=%2d  ndx_size=%8d  set_size=%8d \n",
-                   itype,    lcnt,      meta_bsize,     sizeof(long),    ndx_size,     set_size);
+                    itype,    lcnt,      meta_bsize,     sizeof(long),    ndx_size,     set_size);
 
-   memcpy( shm_meta_ptr,                  &lcnt, (size_t)sizeof(long)         );
-   memcpy(&shm_meta_ptr[           1 ],  Offndx, (size_t)sizeof(long)*ndx_size);
-   memcpy(&shm_meta_ptr[ndx_size + 1 ],  Offset, (size_t)sizeof(long)*set_size);
+   memcpy( shm_meta_ptr,                  &lcnt,        (size_t)sizeof(long)         );
+   memcpy(&shm_meta_ptr[           1 ],  Offndx[itype], (size_t)sizeof(long)*ndx_size);
+   memcpy(&shm_meta_ptr[ndx_size + 1 ],  Offset[itype], (size_t)sizeof(long)*set_size);
 
    //****************************************************************************************{
 
@@ -403,9 +400,9 @@ int get_data_FNs(char *Data_dir,
                  int        hru_cnt[MAX_TYPE][MAX_SBN],
                  char  type_data_fn[MAX_TYPE][MAX_TYPE_FILE][MAX_FILE_CHAR],
                  long  type_data_sz[MAX_TYPE],
-                 int   type_file_ct[MAX_TYPE])
-               //char   data_fn[MAX_FILE][MAX_FILE_CHAR])
-{
+                 int   type_file_ct[MAX_TYPE]){
+
+               //char   data_fn[MAX_FILE][MAX_FILE_CHAR]) {
 
 
   int FN_cnt=0;   // Return total file count (for all types)
@@ -435,7 +432,7 @@ int get_data_FNs(char *Data_dir,
 
      char fn_cmd[512];
      get_fn_cmd(fn_cmd, Data_dir, file_suffixes[type]);
-
+//   printf(" HERE0 type= %d,  Data_dir= %s,  fn_cmd=%s\n",type, Data_dir, fn_cmd);
 
      FILE *file_ptr = popen(fn_cmd, "r");
      char file_name[256];
