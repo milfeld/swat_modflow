@@ -40,15 +40,14 @@ void get_file_nums(char *file_name, int *type_no, int *sbn_no, int *hru_no){
    for(k=0;k<nchars_hru;k++) hru_chars[k] = file_name[nchars_sbn+k]; *hru_no = atoi(hru_chars);
 }
 
-//char * get_file_data(char *shm_data_ptr,   long int *Offset, long int *Offndx,
-  char * get_file_data(char *shm_data_ptr,   long  Offset[N_TYPES][MAX_SBN*MAX_HRU+1], 
-                                             long Offndx[N_TYPES][MAX_SBN*MAX_HRU],
-                       char *file_name,      long int *start,  long int *end,
-                        int *ln_cnt,              int *typeno)
-{
+char * get_file_data(char *shm_data_ptr,   long int *Offset, long int *Offndx,
+                     char *file_name,      long int *start,  long int *end,
+                      int *ln_cnt,              int *typeno) {
+
   //  returns pointer to shared memory location of file, and start and end for each line.
 
   //----------------------------- vars for file index values (type, sbn, hru)
+  c_verbose=0;
 
   int type_no, sbn_no, hru_no;
   int ndx;
@@ -59,27 +58,42 @@ void get_file_nums(char *file_name, int *type_no, int *sbn_no, int *hru_no){
   int  i, tmp, single;
 
   //-----------------------------------------------------------------------------------------------
-                               if(c_verbose>2) printf("v---@ (%d) %s\n",__LINE__, __FILE__);
-                               if(c_verbose>0) printf(" -> get_file_data: filename=%s\n",file_name);
+                if(c_verbose>2) printf("v---@ ( in file: %s,  code line: %d )\n",__FILE__,__LINE__);
+                if(c_verbose>1) printf(" -> get_file_data: filename=%s\n",file_name);
  
    get_file_nums(file_name, &type_no, &sbn_no, &hru_no);
 
-                               if(c_verbose>1) printf(" -> type:sbn:hru (%0.2d %0.4d %0.4d) ",type_no,sbn_no,hru_no);
- 
-   ndx = Offndx[type_no][MAX_HRU*sbn_no + hru_no];
+   ndx = Offndx[MAX_HRU*sbn_no + hru_no];
 
-                               if(c_verbose>0) printf(" -> NDX=%d\n",ndx);
- 
+                if(c_verbose>1) printf(" -> type:sbn:hru (%0.2d %0.5d %0.4d) ndx: (%5d)  MAX_HRU=%3d \n",type_no,sbn_no,hru_no,ndx,MAX_HRU);
+
+                               if(type_no == 110){   
+                                  for(int isbn=1;isbn<1277;isbn++){  //DEBUG OPEN get_file_data
+                                     int sh_no=MAX_HRU*isbn;
+                                     int Index=Offndx[sh_no];
+                                     printf(" NO 01 in get_file_data, isbn= %4d, sh_no=%4d,  OFFNDX= % 5ld,   Offset= %8ld\n", \
+                                                         isbn,      sh_no,      Offndx[sh_no],   Offset[Index]);
+                                  }
+//   int sh_no= MAX_HRU*ii;
+//   int Index=Offndx[itype][sh_no];
+//   printf("Xitype= %02d, Offndx,Offset= %05d,%08d,     Index=%d\n",itype,Offndx[itype][sh_no],Offset[itype][Index], Index);
+
+}
+
    if(ndx == -1){ 
       printf(" -> DB search for type:sbn:hru %d:%d:%d -- ndx:%d\n",type_no,sbn_no,hru_no,ndx);
       printf(" -> DB doesn't know about about file %s\n",file_name); exit(1); 
    }
  
  
-   data = &shm_data_ptr[ Offndx[type_no][MAX_HRU*sbn_no + hru_no] ];
+ //data = &shm_data_ptr[ Offndx[MAX_HRU*sbn_no + hru_no] ];
+   data = &shm_data_ptr[ Offset[ndx] ];
 
-                               if(c_verbose>3) printf(" ->FIRST 100 CHARs at offset %ld\n",Offset[ndx]);
-                               if(c_verbose>3){ for(int i=0;i<100;i++)  printf("%c",data[i]); printf("\n");}
+                               if(type_no == 110){  //DEBUG OPEN get_file_data
+                                 printf(" NO  2 type %d CHARs Ctype=11 at offset %ld  at Offndx %ld\n",
+                                         type_no, Offset[ndx], Offndx[MAX_HRU*sbn_no + hru_no]);
+                                 for(int i=0;i<142;i++)  printf("%c",data[i]); printf("\n");
+                               }
  
    //-----------------------------------------------------------------------------------------------
  
@@ -124,8 +138,9 @@ void get_file_nums(char *file_name, int *type_no, int *sbn_no, int *hru_no){
  
    if(*ln_cnt > MAX_LINE +1){ printf("Increase MAX_LINE above %d:  %s\n", *ln_cnt,strerror(errno)); exit(1); }
 
-                               if(c_verbose>0) printf(" ->Line Start count =%d\n",*ln_cnt);
+                               if(c_verbose>1) printf(" -> Line count =%d\n",*ln_cnt);
                                if(c_verbose>3) for(i=0;i<*ln_cnt; i++){ printf("   ln=%0.5d start=%.8d\n",i,start[i]); }
+                               if(c_verbose>2) printf("^---@ ( in file: %s,  code line: %d )\n",__FILE__,__LINE__);
   return data;
 
 
@@ -148,11 +163,6 @@ void get_file_nums(char *file_name, int *type_no, int *sbn_no, int *hru_no){
            5    5
                           4  33
      ----------------------------------------------------------------------------------------------- */
-
-
-                                   if(c_verbose>0) printf(" ->Line Start count =%d\n",*ln_cnt);
-                                   if(c_verbose>3) for(i=0;i<*ln_cnt; i++){printf("   ln=%0.5d start=%.8d\n",i,start[i]);}
-                                   if(c_verbose>2) printf("^---@ (%d) %s\n",__LINE__, __FILE__);
 }
 
 
@@ -258,6 +268,17 @@ void get_shm_meta(int *file_cnt, long *Offset, long *Offndx, int type){
    if (close(shm_meta_fd) == -1)                { printf("shm close failed:  %s\n", strerror(errno)); exit(1); }
 
    *file_cnt = (int) lfile_cnt;
+
+ if(type == 100){
+ //if(type == 11){
+    for(int isbn=1;isbn<1277;isbn++){
+       int sh_no=MAX_HRU*isbn;
+       int Index=Offndx[sh_no];
+       printf("YiType11 get_shm_metaC, isbn= %4d, sh_no=%4d,  OFFNDX= % 5ld,   Offset= %8ld\n", \
+                           isbn,      sh_no,      Offndx[sh_no],   Offset[Index]);
+    }
+ }
+
 
 } // end get_shm_meta
 

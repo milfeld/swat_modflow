@@ -42,8 +42,8 @@ use, intrinsic :: iso_c_binding, only : C_PTR, C_F_POINTER
 
 integer,parameter :: KI8 = selected_int_kind(15)
 
-integer,parameter :: MAX_TYPE=15,    MAX_SBN=1500, MAX_HRU=14
-integer,parameter :: MAX_FILE=60000, MAX_LINE=500
+integer,parameter :: MAX_TYPE=15,    MAX_SBN=1500, MAX_HRU=64
+integer,parameter :: MAX_FILE=35000, MAX_LINE=500
 integer,parameter :: MAX_SBNxMAX_HRU=MAX_SBN*MAX_HRU
 
 integer,parameter :: MAX_DATA_CHARS_in_FILE =6400
@@ -51,8 +51,8 @@ integer,parameter :: MAX_DATA_CHARS_in_FILE =6400
 integer      :: file_ct(MAX_TYPE), line_cnt, type_no
 
 !integer(KI8) :: offset(MAX_FILE+1), offndx(MAX_TYPE*MAX_SBN*MAX_HRU+1), start(MAX_LINE+1), end(MAX_LINE)
-integer(KI8) :: offset(MAX_TYPE*MAX_SBN*MAX_HRU+1,MAX_TYPE)  ! See writer.c
-integer(KI8) :: offndx(MAX_TYPE*MAX_SBN*MAX_HRU  ,MAX_TYPE)  ! See writer.c
+integer(KI8) :: offset(MAX_SBN*MAX_HRU+1,MAX_TYPE)  ! See writer.c
+integer(KI8) :: offndx(MAX_SBN*MAX_HRU  ,MAX_TYPE)  ! See writer.c
 
 integer(KI8) :: start(MAX_LINE+1)
 integer(KI8) ::   end(MAX_LINE)   !?????????
@@ -163,20 +163,34 @@ end module c_shm_api     !http://fortranwiki.org/fortran/show/iso_c_binding
      use c_shm_api
      use, intrinsic :: iso_c_binding, only : C_F_POINTER
 
+integer :: isbn, sh_no, Index
+
      integer :: type
    
      call set_verbosity()
      call set_c_verbosity(f_verbose)
    
      do type=1,MAX_TYPE
-   !/  print*,'here 0 before get_shm_meta       type= ', type-1
+     ! print*,'here 0 before get_shm_meta       typeC= ', type-1
        call get_shm_meta(file_ct(type),offset(1,type),offndx(1,type),type-1) !Get meta data in shared mem
+!print*,"XHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH0"
+!if(type == 12) then
+!print*,"XHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH1"
+!      do isbn=1,1277
+!       !sh_no=MAX_HRU*isbn+1 !??????????? 1 based
+!        sh_no=64*isbn+1 !??????????? 1 based
+!        Index= Offndx(sh_no,type)+1
+!        write(*,'( "XitpeF= 12, isbn= ",i8,"  sh_no= ",i8,"   OFFNDX= ",i8,"      Offset=",i8 )') &
+!                                isbn,         sh_no,          Offndx(sh_no,type), Offset(Index,type)
+!     enddo
+!endif 
+!print*,"XHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH2"
 
-   !/  print*,'here 1 before get_shm_data_type  type=', type-1
+     ! print*,'here 1 before get_shm_data_type  typeC=', type-1
        shm_data_ptr(type)=get_shm_data_type_ptr(shm_data_fd(type),type-1)    !Open Access to shared mem
 
 
-   !/  print*,'here 2 before  c_f_pointer       type=', type-1
+     ! print*,'here 2 before  c_f_pointer       typeC=', type-1
        call c_f_pointer(shm_data_ptr(type), data)                          !translate C ptr to F90 ptr
 
      end do
@@ -187,7 +201,7 @@ end module c_shm_api     !http://fortranwiki.org/fortran/show/iso_c_binding
    
    ! get_file_data
    !               Sets cptr to location of file_name's content in shared memory.
-   !               Sets type_no
+   !               Sets type
    ! case
    !                Sets data<type> to cptr
    !                Sets    k<type> to start location
@@ -196,9 +210,14 @@ end module c_shm_api     !http://fortranwiki.org/fortran/show/iso_c_binding
       use c_shm_api, ONLY: get_file_data
       use, intrinsic :: iso_c_binding, only : C_F_POINTER,  C_NULL_CHAR
 
+      implicit none
+
       character(len=*)  :: file
       character(len=14) :: file_name
       integer           :: sufx_len, pt_ndx
+      integer           :: i, typeF
+ 
+integer ::  ish_no, Jndex, isbn
 
  logical:: prCHM=.false., prGW=.false., prHRU=.false., prLWQ=.false., prMGT=.false., prPND=.false., prRES=.false., prRTE=.false.
  logical:: prSDR=.false., prSEP=.false.,prSOL=.false., prSUB=.false., prSWQ=.false., prWGN=.false., prWUS=.false.
@@ -221,88 +240,117 @@ end module c_shm_api     !http://fortranwiki.org/fortran/show/iso_c_binding
          write(*,'(" -> ERROR: SWAT File Type (",a,") have not been implemented yet.")') file_name(pt_ndx+1:pt_ndx+sufx_len)
          stop
       endif
+      print*," OOOOOOa file --> ", file," <-------"
+      print*," OOOOOOb file= ", file(pt_ndx+1:pt_ndx+sufx_len)
 
       select case( file(pt_ndx+1:pt_ndx+sufx_len) )
       case ("chm"); 
-                 cptrCHM = get_file_data(shm_data_ptr( 1), offset, offndx, file_name,startCHM,   endCHM, line_cnt, type_no)
+                 typeF=1
+                 cptrCHM = get_file_data(shm_data_ptr( 1), offset(1,typeF), offndx(1,typeF), file_name,startCHM,   endCHM, line_cnt, type_no)
                  call c_f_pointer(cptrCHM, dataCHM); kCHM=0
-                 if(prCHM) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataCHM(startCHM(i):endCHM(i)); end do; endif
+                 if(prCHM) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataCHM(startCHM(i):endCHM(i)); end do; endif
 
       case ( "gw"); 
-                 cptrGW  = get_file_data(shm_data_ptr( 2), offset, offndx, file_name, startGW,    endGW, line_cnt, type_no)
+                 typeF=2
+                 cptrGW  = get_file_data(shm_data_ptr( 2), offset(1,typeF), offndx(1,typeF), file_name, startGW,    endGW, line_cnt, type_no)
                  call c_f_pointer(cptrGW,  dataGW);  kGW=0
-                 if(prGW ) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i, dataGW( startGW(i): endGW(i)); end do; endif
+                 if(prGW ) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i, dataGW( startGW(i): endGW(i)); end do; endif
 
       case ("hru"); 
-                 cptrHRU = get_file_data(shm_data_ptr( 3), offset, offndx, file_name,startHRU,   endHRU, line_cnt, type_no)
+                 typeF=3
+                 cptrHRU = get_file_data(shm_data_ptr( 3), offset(1,typeF), offndx(1,typeF), file_name,startHRU,   endHRU, line_cnt, type_no)
                  call c_f_pointer(cptrHRU, dataHRU); kHRU=0
-                 if(prHRU) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataHRU(startHRU(i):endHRU(i)); end do; endif
+                 if(prHRU) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataHRU(startHRU(i):endHRU(i)); end do; endif
 
       case ("lwq"); 
-                 cptrLWQ = get_file_data(shm_data_ptr( 4), offset, offndx, file_name,startLWQ,   endLWQ, line_cnt, type_no)
+                 typeF=4
+                 cptrLWQ = get_file_data(shm_data_ptr( 4), offset(1,typeF), offndx(1,typeF), file_name,startLWQ,   endLWQ, line_cnt, type_no)
                  call c_f_pointer(cptrLWQ, dataLWQ); kLWQ=0
-                 if(prLWQ) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataLWQ(startLWQ(i):endLWQ(i)); end do; endif
+                 if(prLWQ) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataLWQ(startLWQ(i):endLWQ(i)); end do; endif
 
       case ("mgt"); 
-                 cptrMGT = get_file_data(shm_data_ptr( 5), offset, offndx, file_name,startMGT,   endMGT, line_cnt, type_no)
+                 typeF=5
+                 cptrMGT = get_file_data(shm_data_ptr( 5), offset(1,typeF), offndx(1,typeF), file_name,startMGT,   endMGT, line_cnt, type_no)
                  call c_f_pointer(cptrMGT, dataMGT); kMGT=0
-                 if(prMGT) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataMGT(startMGT(i):endMGT(i)); end do; endif
+                 if(prMGT) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataMGT(startMGT(i):endMGT(i)); end do; endif
 
       case ("pnd"); 
-                 cptrPND = get_file_data(shm_data_ptr( 6), offset, offndx, file_name,startPND,   endPND, line_cnt, type_no)
+                 typeF=6
+                 cptrPND = get_file_data(shm_data_ptr( 6), offset(1,typeF), offndx(1,typeF), file_name,startPND,   endPND, line_cnt, type_no)
                  call c_f_pointer(cptrPND, dataPND); kPND=0
-                 if(prPND) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataPND(startPND(i):endPND(i)); end do; endif
+                 if(prPND) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataPND(startPND(i):endPND(i)); end do; endif
 
       case ("res"); 
-                 cptrRES = get_file_data(shm_data_ptr( 7), offset, offndx, file_name,startRES,   endRES, line_cnt, type_no)
+                 typeF=7
+                 cptrRES = get_file_data(shm_data_ptr( 7), offset(1,typeF), offndx(1,typeF), file_name,startRES,   endRES, line_cnt, type_no)
                  call c_f_pointer(cptrRES, dataRES); kRES=0
-                 if(prRES) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataRES(startRES(i):endRES(i)); end do; endif
+                 if(prRES) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataRES(startRES(i):endRES(i)); end do; endif
 
       case ("rte"); 
-                 cptrRTE = get_file_data(shm_data_ptr( 8), offset, offndx, file_name,startRTE,   endRTE, line_cnt, type_no)
+                 typeF=8
+                 cptrRTE = get_file_data(shm_data_ptr( 8), offset(1,typeF), offndx(1,typeF), file_name,startRTE,   endRTE, line_cnt, type_no)
                  call c_f_pointer(cptrRTE, dataRTE); kRTE=0
-                 if(prRTE) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataRTE(startRTE(i):endRTE(i)); end do; endif
+                 if(prRTE) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataRTE(startRTE(i):endRTE(i)); end do; endif
 
       case ("sdr"); 
-                 cptrSDR = get_file_data(shm_data_ptr( 9), offset, offndx, file_name,startSDR,   endSDR, line_cnt, type_no)
+                 typeF=9
+                 cptrSDR = get_file_data(shm_data_ptr( 9), offset(1,typeF), offndx(1,typeF), file_name,startSDR,   endSDR, line_cnt, type_no)
                  call c_f_pointer(cptrSDR, dataSDR); kSDR=0
-                 if(prSDR) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataSDR(startSDR(i):endSDR(i)); end do; endif
+                 if(prSDR) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSDR(startSDR(i):endSDR(i)); end do; endif
 
       case ("sep"); 
-                 cptrSEP = get_file_data(shm_data_ptr(10), offset, offndx, file_name,startSEP,   endSEP, line_cnt, type_no)
+                 typeF=10
+                 cptrSEP = get_file_data(shm_data_ptr(10), offset(1,typeF), offndx(1,typeF), file_name,startSEP,   endSEP, line_cnt, type_no)
                  call c_f_pointer(cptrSEP, dataSEP); kSEP=0
-                 if(prSEP) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataSEP(startSEP(i):endSEP(i)); end do; endif
+                 if(prSEP) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSEP(startSEP(i):endSEP(i)); end do; endif
 
       case ("sol"); 
-                 cptrSOL = get_file_data(shm_data_ptr(11), offset, offndx, file_name,startSOL,   endSOL, line_cnt, type_no)
+                 typeF=11
+                 cptrSOL = get_file_data(shm_data_ptr(11), offset(1,typeF), offndx(1,typeF), file_name,startSOL,   endSOL, line_cnt, type_no)
                  call c_f_pointer(cptrSOL, dataSOL); kSOL=0
-                 if(prSOL) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataSOL(startSOL(i):endSOL(i)); end do; endif
+                 if(prSOL) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSOL(startSOL(i):endSOL(i)); end do; endif
 
       case ("sub"); 
-                 cptrSUB = get_file_data(shm_data_ptr(12), offset, offndx, file_name,startSUB,   endSUB, line_cnt, type_no)
+                 typeF=12
+ if(typeF == 120) then
+ print*," v case 12"
+       do isbn=1,1277
+         ish_no=MAX_HRU*isbn+1 !??????????? 1 based
+         Jndex= Offndx(ish_no,typeF)+1
+         write(*,'( "Aitpef= 12, isbn= ",i5,"  sh_no= ",i6,"   OFFNDX= ",i5,"       Offset=",i8 )') &
+                                 isbn,        ish_no,       offndx(ish_no,typeF), offset(Jndex,typeF)
+      enddo
+ print*," ^ case 12 write offndx offset",file, file_name
+ endif 
+
+                 cptrSUB = get_file_data(shm_data_ptr(12), offset(1,typeF), offndx(1,typeF), file_name,startSUB,   endSUB, line_cnt, type_no)
                  call c_f_pointer(cptrSUB, dataSUB); kSUB=0
-                 if(prSUB) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataSUB(startSUB(i):endSUB(i)); end do; endif
+                 if(prSUB) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSUB(startSUB(i):endSUB(i)); end do; endif
+ !print*," ^ case 12 get_file_data"
+                 if(prSUB) then;  do i=1,line_cnt; write(*,'(i4," ",i5," - ",i5)')i,startSUB(i),endSUB(i); end do; endif
+ !print*," ^ case 12 write startSUB,endSUB prSUB"
 
       case ("swq"); 
-                 cptrSWQ = get_file_data(shm_data_ptr(13), offset, offndx, file_name,startSWQ,   endSWQ, line_cnt, type_no)
+                 typeF=13
+                 cptrSWQ = get_file_data(shm_data_ptr(13), offset(1,typeF), offndx(1,typeF), file_name,startSWQ,   endSWQ, line_cnt, type_no)
                  call c_f_pointer(cptrSWQ, dataSWQ); kSWQ=0
-                 if(prSWQ) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataSWQ(startSWQ(i):endSWQ(i)); end do; endif
+                 if(prSWQ) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSWQ(startSWQ(i):endSWQ(i)); end do; endif
 
       case ("wgn"); 
-                 cptrWGN = get_file_data(shm_data_ptr(14), offset, offndx, file_name,startWGN,   endWGN, line_cnt, type_no)
+                 typeF=14
+                 cptrWGN = get_file_data(shm_data_ptr(14), offset(1,typeF), offndx(1,typeF), file_name,startWGN,   endWGN, line_cnt, type_no)
                  call c_f_pointer(cptrWGN, dataWGN); kWGN=0
-                 if(prWGN) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataWGN(startWGN(i):endWGN(i)); end do; endif
+                 if(prWGN) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataWGN(startWGN(i):endWGN(i)); end do; endif
 
       case ("wus"); 
-                 cptrWUS = get_file_data(shm_data_ptr(15), offset, offndx, file_name,startWUS,   endWUS, line_cnt, type_no)
+                 typeF=15
+                 cptrWUS = get_file_data(shm_data_ptr(15), offset(1,typeF), offndx(1,typeF), file_name,startWUS,   endWUS, line_cnt, type_no)
                  call c_f_pointer(cptrWUS, dataWUS); kWUS=0
-                 if(prWUS) then;  do i=1,line_cnt-1; write(*,'(i4,a)')     i,dataWUS(startWUS(i):endWUS(i)); end do; endif
+                 if(prWUS) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataWUS(startWUS(i):endWUS(i)); end do; endif
 
       case default
-               write(*,'(" -> ERROR: file TYPE ",i2," not found (",a,").")' ) type_no, file_name(pt_ndx+1:pt_ndx+sufx_len)
+               write(*,'(" -> ERROR: file TYPE (fortran,1-N_TYPES) ",i2," not found (",a,").")' ) typeF, file_name(pt_ndx+1:pt_ndx+sufx_len)
                stop
       end select
 
    end subroutine shm_open
-
-

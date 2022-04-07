@@ -82,8 +82,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
 #ifdef SHM_IO
-#     define read(x,y) k=k+1; READ( dataSHM(startRTE(k):endRTE(k)),y )
-#     define iff(x)             if( dataSHM(startRTE(k):endRTE(k)) == shm_eof )
+#     define read(x,y) k=k+1; READ( dataRTE(startRTE(k):endRTE(k)),y )
+#     define iff(x)             if( dataRTE(startRTE(k):endRTE(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -94,7 +94,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -104,7 +103,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kRTE
-      dataSHM => dataRTE
 #endif
   
       eof = 0
@@ -120,7 +118,7 @@
 
 #ifdef SHM_IO
 #     undef  read(x,y  )
-#     define read(x,y,z) k=k+1; READ( dataSHM(startRTE(k):endRTE(k)),y,z)
+#     define read(x,y,z) k=k+1; READ( dataRTE(startRTE(k):endRTE(k)),y,z)
 #endif
 
       read (103,*,iostat=eof) ch_cov2(irch) 

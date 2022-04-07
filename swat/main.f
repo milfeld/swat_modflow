@@ -65,11 +65,11 @@
 
 !! Set up directories from SWAT_DATA & SWAT_OUTPUT env vars(defaults ./)
 
-      call get_io_dirs()  
-
+!!km  call get_io_dirs()  
 !! process input
 		
       call getallo
+      stop ' ^ STOPPED getallo'
       call allocate_parms
       call readfile
       call readbsn

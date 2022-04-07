@@ -112,8 +112,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y,z) k=k+1; READ( dataSHM(startRES(k):endRES(k)),y,z )
-#     define iff(x)               if( dataSHM(startRES(k):endRES(k)) == shm_eof )
+#     define read(x,y,z) k=k+1; READ( dataRES(startRES(k):endRES(k)),y,z )
+#     define iff(x)               if( dataRES(startRES(k):endRES(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -125,7 +125,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -136,7 +135,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kRES
-      dataSHM => dataRES
 #endif
 
 !!    initialize local variables

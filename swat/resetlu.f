@@ -29,7 +29,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+
       use parm
+
+      use io_dirs, only: data_swat
+
 	character(len=80) :: titldum
 
       open (9123,file=data_swat//fname(no_lup))

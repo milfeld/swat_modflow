@@ -294,8 +294,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y) kk=kk+1; READ( dataSHM(startMGT(kk):endMGT(kk)),y )
-#     define iff(x)               if( dataSHM(startMGT(kk):endMGT(kk)) == shm_eof )
+#     define read(x,y) kk=kk+1; READ( dataMGT(startMGT(kk):endMGT(kk)),y )
+#     define iff(x)               if( dataMGT(startMGT(kk):endMGT(kk)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -307,7 +307,6 @@
       use shm
       integer*8 :: kk
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -326,7 +325,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          kk   =     kMGT
-      dataSHM => dataMGT
 #endif
 
       !for Fort Cobb simulation
@@ -380,7 +378,7 @@
 
 #ifdef SHM_IO
 #undef  read(x,y  )
-#define read(x,y,z) k=k+1; READ(dataSHM(start(k):end(k)),y,z)
+#define read(x,y,z) k=k+1; READ(dataMGT(startMGT(k):endMGT(k)),y,z)
 #endif
 
 !!    set pothole trigger

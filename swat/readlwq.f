@@ -81,8 +81,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y,z) k=k+1; READ(dataSHM(startLWQ(k):endLWQ(k)),y,z)
-#     define iff(x)              if( dataSHM(startLWQ(k):endLWQ(k)) == shm_eof )
+#     define read(x,y,z) k=k+1; READ(dataLWQ(startLWQ(k):endLWQ(k)),y,z)
+#     define iff(x)              if( dataLWQ(startLWQ(k):endLWQ(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -93,7 +93,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       integer :: eof
@@ -104,7 +103,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kLWQ
-      dataSHM => dataLWQ
 #endif
 
       eof = 0

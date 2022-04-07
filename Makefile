@@ -11,7 +11,8 @@ PROJ_NAME=SWAT_MODFLOW_rel64
  NO_DIAG="-diag-disable 8291,10006"
 
    FFLAG=-c -standard-semantics -fmessage-length=0 -ffixed-line-length-80  -funderscoring -fbacktrace -ffpe-trap=invalid,zero,overflow
-   RFLAG=-O3
+   DEBUG=-g -pg
+   RFLAG=-O2
  LONGFIX=-ffixed-line-length-132
  LONGFREE=-ffree-line-length-200
    ARCH64=-m64
@@ -32,22 +33,22 @@ PROJ_NAME=SWAT_MODFLOW_rel64
 
 $(PROJ_NAME): $(C_OBJ) $(MOD_OBJ) $(OBJ)
 	@echo LINKING
-	${FC} ${NO_DIAG} ${IO} ${ARCH64}               -fopenmp -mkl -fpp $^ -o $@ 
+	${FC} ${NO_DIAG} ${IO} ${ARCH64} ${DEBUG}        -fopenmp -mkl -fpp $^ -o $@ 
 
 %.o: %.f90
 	@echo Compiling and generating object $@ ...
-	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG}             $^
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${DEBUG}             $^
 %.o: %.f
 	@echo Compiling and generating object $@ ...
-	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFREE} $^
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${DEBUG} ${LONGFREE} $^
 
 %main.o: %main.f
 	@echo Compiling and generating object $@ ...
-	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${LONGFIX}  $^
+	${FC} -c ${NO_DIAG} ${IO} ${ARCH64} ${FFLAG} ${RFLAG} ${DEBUG} ${LONGFIX}  $^
 
 %.o: %.c
 	@echo compiling $@ ...
-	${CC} -c  $^
+	${CC} -c  ${DEBUG} $^
 
 clean:
 	@echo Removing secondary things

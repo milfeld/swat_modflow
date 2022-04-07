@@ -129,8 +129,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y) k=k+1; READ( dataSHM(startWGN(k):endWGN(k)),y )
-#     define iff(x)             if( dataSHM(startWGN(k):endWGN(k)) == shm_eof )
+#     define read(x,y) k=k+1; READ( dataWGN(startWGN(k):endWGN(k)),y )
+#     define iff(x)             if( dataWGN(startWGN(k):endWGN(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -141,7 +141,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -154,7 +153,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kWGN
-      dataSHM => dataWGN
 #endif
 
       pcpd = 0.

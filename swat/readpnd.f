@@ -171,8 +171,8 @@
 ! macro trick: single macro handles backspace(#) or backspace # -> k=k-1 ; kdummy=(#) | kdummy=#
 #     define backspace k=k-1 ; kdummy=  
 
-#     define read(x,y,z) k=k+1; READ( dataSHM(startPND(k):endPND(k)),y,z )
-#     define iff(x)               if( dataSHM(startPND(k):endPND(k)) == shm_eof )
+#     define read(x,y,z) k=k+1; READ( dataPND(startPND(k):endPND(k)),y,z )
+#     define iff(x)               if( dataPND(startPND(k):endPND(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -184,7 +184,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -200,7 +199,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kPND
-      dataSHM => dataPND
 #endif
 
       eof = 0

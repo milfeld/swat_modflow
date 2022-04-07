@@ -74,8 +74,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 #ifdef SHM_IO
-#     define read(x,y) k=k+1; READ( dataSHM(startSOL(k):endSOL(k)),y )
-#     define iff(x)             if( dataSHM(startSOL(k):endSOL(k)) == shm_eof )
+#     define read(x,y) k=k+1; READ( dataSOL(startSOL(k):endSOL(k)),y )
+#     define iff(x)             if( dataSOL(startSOL(k):endSOL(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -86,7 +86,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -98,7 +97,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kSOL
-      dataSHM => dataSOL
 #endif
 
 !!    initialize local variables
@@ -141,7 +139,7 @@
 
 #ifdef SHM_IO
 #undef  read(x,y  )
-#define read(x,y,z) k=k+1; READ(dataSHM(start(k):end(k)),y,iostat=eof)
+#define read(x,y,z) k=k+1; READ(dataSOL(startSOL(k):endSOL(k)),y,iostat=eof)
 #endif
 
 !    change below double subscripted sol_ec statement 1/27/09 when making septic changes

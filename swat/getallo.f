@@ -93,7 +93,14 @@
 
 
       use parm
-      use io_dirs, only: data_swat
+      use io_dirs, only: data_swat, data_sub
+
+#ifdef SHM_IO
+      use  c_shm_api
+      use shm
+      integer*8 :: kk
+      character :: shm_eof
+#endif
 
       character (len=13) :: urbandb, plantdb, tilldb, pestdb, figfile,  
      &                      fertdb, subfile, fcstfile, bsnfile
@@ -370,7 +377,9 @@
       pstflg = 0
       mhru1 = 1
       open (27,file=data_swat//figfile)
+      knt=0   !KFM counter
       do while (icd > 0)
+      knt=knt+1   !KFM counter
         read (27,5002) a
         if (a /= "*") then
           backspace 27
@@ -385,7 +394,17 @@
             numhru = 0
             read (27,6100) subfile
             call caps(subfile)
-            open (25,file=data_swat//subfile)
+
+
+#ifdef SHM_IO
+#     define open(x,y) call shm_open(y)
+#     define read(x,y) kk=kk+1; READ( dataSUB(startSUB(kk):endSUB(kk)),y )
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+         kk   =    kSUB
+#endif
+      print*, " 01 OPEN getallo.f subfile: ",subfile
+            open (25,file=data_sub//subfile)
+      print*, " 02 READ getallo.f subfile: ",subfile
             do j = 1,52 
               read (25,6000) titldum
             end do
@@ -394,9 +413,22 @@
             do j = 1, 8
               read (25,6000) titldum
             end do
+#ifdef SHM_IO
+            kSUB = kk
+#endif
+      print*, " 03 READ getallo.f subfile: ",subfile
             call hruallo
+#ifdef SHM_IO
+            kSUB = 0
+#endif
             mhru1 = mhru + 1
+#     undef  read(x,y)
+#     undef  open(x,y)
+#ifndef SHM_IO
             close (25)
+#endif
+!        stop ' ^ STOPPED call hruallo'
+
           case (2)                      !! icd = 2  ROUTE command
             mch = mch + 1               !! # channels
             read (27,5002) a   
@@ -444,6 +476,7 @@
           mhyd = Max(mhyd,iht)
 
         end if
+        print*," ^ CASE(",icd,")    knt= ",knt
       end do  
       close (27)
       

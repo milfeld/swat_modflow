@@ -65,7 +65,14 @@
 
 
       use parm
-      use io_dirs, only: data_swat
+      use io_dirs, only: data_swat, data_sol, data_mgt, data_chm
+
+#ifdef SHM_IO
+      use shm
+      use  c_shm_api
+      integer*8 :: kk
+      character :: shm_eof
+#endif
 
       character (len=13) :: hrufile, mgtfile, solfile, chmfile
       character (len=80) ::  titldum
@@ -75,11 +82,26 @@
       integer :: iopera_sub
       real :: depth(25)
 
+#ifdef SHM_IO
+      shm_eof = achar(28)  ! ANSII FS (File Separator)
+#endif
+
       do j= mhru1, mhru
       mgtfile = ""
       solfile = ""
       chmfile = ""
+
+#ifdef SHM_IO
+        kk    =    kSUB
+#     define read(x,y,z) kk=kk+1; READ(dataSUB(startSUB(kk):endSUB(kk)),y,iostat=eof)
+#endif
       read (25,5300,iostat=eof)hrufile, mgtfile, solfile, chmfile, ilnds
+      !KM print*,"hrufile= ",hrufile
+      !KM print*,"mgtfile= ",mgtfile
+      !KM print*,"solfile= ",solfile
+      !KM print*,"chmfile= ",chmfile
+      !KM print*,"ilnds  = ",ilnds
+
       if (eof < 0) return
       if (ilnds > 0) then 
         ils_nofig = 1
@@ -87,7 +109,16 @@
         call caps(mgtfile)
         call caps(solfile)
         call caps(chmfile)
-        open (9,file=data_swat//solfile,recl=350)
+
+#ifdef SHM_IO
+#     define read(x,y) kk=kk+1; READ( dataSOL(startSOL(kk):endSOL(kk)),y )
+#     define open(x,y) call shm_open(y)
+         kk   =     kSOL
+#endif
+
+!!km    open (9,file=data_swat//solfile,recl=350)
+        open (9,file=data_sol//solfile)         !!kfm removed recl=350
+      print*," ^ open solfile in hruallo: ",solfile
         !! calculate # of soil layers in profile
           depth = 0.
           lyrtot = 0
@@ -104,20 +135,37 @@
             if (depth(k) <= 0.001) exit
           end do
           mlyr = Max(mlyr,lyrtot)
-        close (9)
-        open (10,file=data_swat//mgtfile)
+#ifndef SHM_IO
+          close (9)
+#endif
+#     undef  read(x,y)
+#     undef  open(x,y)
+
+
+#ifdef SHM_IO
+#     define open(x,y) call shm_open(y)
+#     define read(x,y,z) kk=kk+1; READ( dataMGT(startMGT(kk):endMGT(kk)),y,z )
+#     define iff(x)                 if( dataMGT(startMGT(kk):endMGT(kk)) == shm_eof )
+        kk      =     kMGT
+#else
+#     define iff(x) if( x )
+#endif
+
+        open (10,file=data_mgt//mgtfile)
+        
       
 !!  calculate max number of operations per hru
         iopera_sub = 1
         mcri = 0
-        do kk = 1, 30
-          read (10,6000) titldum
+        do kl = 1, 30
+          read (10,6000,iostat=eof) titldum      !!kfm added iostat
         end do
+
         
-        do kk = 1, 1000
+        do kl = 1, 1000
           read (10,6300,iostat=eof) mgt_op, mgt1i
-          if (eof < 0) exit
-          if (mgt_op == 1) then
+          iff (eof < 0) exit                     !!kfm changed to iff
+          if  (mgt_op == 1) then
             mcri = mcri + 1
           end if
           if (mgt_op == 4 .and. mgt1i > 0) pstflg(mgt1i) = 1
@@ -125,24 +173,40 @@
         end do
         iopera = Max(iopera,iopera_sub)
         mcr = Max(mcr,mcri)
-        
+
+#ifndef SHM_IO
         close (10)            !!   nubz test
-                   
-        open (11,file=data_swat//chmfile)
+#endif
+
+#     undef  read(x,y)
+#     undef  open(x,y)
+#     undef   iff(x)
+
+#ifdef SHM_IO
+#     define open(x,y) call shm_open(y)
+#     define read(x,y,z) kk=kk+1; READ( dataCHM(startCHM(kk):endCHM(kk)),y,z )
+#     define iff(x)                 if( dataCHM(startCHM(kk):endCHM(kk)) == shm_eof )
+        kk      =     kCHM
+#else
+#     define iff(x) if( x )
+#endif
+
+
+        open (11,file=data_chm//chmfile)
           eof = 0
           do 
             do k = 1, 11
               read (11,6000,iostat=eof) titldum
-              if (eof < 0) exit
+              iff (eof < 0) exit   !kfm changed to iff
             end do
-            if (eof < 0) exit
+            iff (eof < 0) exit     !kfm changed to iff
             do
               pstnum = 0
               read (11,*,iostat=eof) pstnum
-              if (eof < 0) exit
+              iff (eof < 0) exit   !kfm changed to iff
               if (pstnum > 0) pstflg(pstnum) = 1
             end do
-            if (eof < 0) exit
+            iff (eof < 0) exit     !kfm changed to iff
           end do
       close (11)
       end do    ! hru loop

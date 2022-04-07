@@ -56,8 +56,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 #ifdef SHM_IO
-#     define read(x,y,z) kk=kk+1; READ( dataSHM(startCHM(kk):endCHM(kk)),y,z )
-#     define iff(x)                 if( dataSHM(startCHM(kk):endCHM(kk)) == shm_eof )
+#     define read(x,y,z) kk=kk+1; READ( dataCHM(startCHM(kk):endCHM(kk)),y,z )
+#     define iff(x)                 if( dataCHM(startCHM(kk):endCHM(kk)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -69,7 +69,6 @@
       use shm
       integer*8 :: kk
       character :: shm_eof
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -79,7 +78,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSI FS (File Separator)
         kk    =     kCHM
-      dataSHM => dataCHM
 #endif
 
       eof = 0

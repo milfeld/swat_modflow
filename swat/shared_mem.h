@@ -17,11 +17,11 @@
   #define MAX_TYPE         15
   #define MAX_SBN        1500       //Make sure this is 1 more than and particular type (e.g. 01499xxxx.cm)
                                     //bc sbn numbers are from 1-1499, but arrays are [0],...,[1499]
-  #define MAX_HRU          14
+  #define MAX_HRU          64
   //                                 MAX_TYPE* MAX_SBN * MAX_HRU=294,000*8 = 2,352,000
-  #define MAX_SBNxMAX_HRU     21000
-  #define MAX_TYPE_FILE        8000
-  #define MAX_FILE            60000
+  #define MAX_SBNxMAX_HRU     82000
+  #define MAX_TYPE_FILE       35000
+  #define MAX_FILE            35000   // same as MAX_TYPE_FILE now that a directory exists for each type
   #define MAX_LINE              500
   #define MAX_FILE_CHAR          14
   #define MAX_TYPE_CHAR           4
@@ -66,10 +66,11 @@ int c_verbose;
 //   No need to change anything below
 
 //long put_shm_meta(int file_cnt, long *Offset, long *Offndx);
-void put_shm_meta(int file_ct[N_TYPES], long  Offset[N_TYPES][MAX_SBN*MAX_HRU+1], long Offndx[N_TYPES][MAX_SBN*MAX_HRU], int type);
+//void put_shm_meta(int file_ct[N_TYPES], long  Offset[N_TYPES][MAX_SBN*MAX_HRU+1], long Offndx[N_TYPES][MAX_SBN*MAX_HRU], int type);
 
 //int  put_shm_data(              long *Offset, long *Offndx);
 
+/*
 long put_shm_data(
     long    Offset[N_TYPES][MAX_SBN*MAX_HRU+1], long Offndx[N_TYPES][MAX_SBN*MAX_HRU], int FN_cnt,
     char *Data_dir,
@@ -80,6 +81,7 @@ long put_shm_data(
     char   data_fn[MAX_TYPE][MAX_TYPE_FILE][MAX_FILE_CHAR],
     long   data_sz[MAX_TYPE],
     int    file_ct[MAX_TYPE]); 
+*/
 
 void   get_shm_meta(int *file_cnt, long *Offset, long *Offndx, int type);
 char * get_shm_data_ptr(               int *shm_data_fd);
@@ -88,8 +90,8 @@ void   ulink_shm_data(char *shm_data_name);
 
 void   get_file_nums(char *file_name, int *type_no, int *sbn_no, int *hru_no);
 
-//char * get_file_data(char *shm_data_ptr,   long int *Offset, long int *Offndx,
-  char * get_file_data(char *shm_data_ptr,   long  Offset[N_TYPES][MAX_SBN*MAX_HRU+1], long Offndx[N_TYPES][MAX_SBN*MAX_HRU],
+//char * get_file_data(char *shm_data_ptr,   long  Offset[N_TYPES][MAX_SBN*MAX_HRU+1], long Offndx[N_TYPES][MAX_SBN*MAX_HRU],
+  char * get_file_data(char *shm_data_ptr,   long int *Offset, long int *Offndx,
                        char *file_name,      long int *start,  long int *end, int *ln_cnt,  int *type_no);
 //                     char *file_name,      long int *start,       int *ln_cnt,  int *type_no);
 

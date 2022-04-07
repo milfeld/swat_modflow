@@ -59,8 +59,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 #ifdef SHM_IO
-#     define read(x,y) k=k+1; READ(dataSHM(startGW(k):endGW(k)),y)
-#     define iff(x)            if( dataSHM(startGW(k):endGW(k)) == shm_eof )
+#     define read(x,y) k=k+1; READ(dataGW(startGW(k):endGW(k)),y)
+#     define iff(x)            if( dataGW(startGW(k):endGW(k)) == shm_eof )
 #else
 #     define iff(x) if( x )
 #endif
@@ -72,7 +72,6 @@
       use shm
       integer*8 :: k
       character :: shm_eof 
-      character(len=MAX_DATA_CHARS_in_FILE),pointer  :: dataSHM
 #endif
 
       character (len=80) :: titldum
@@ -82,7 +81,6 @@
 #ifdef SHM_IO
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          k    =     kGW
-      dataSHM => dataGW
 #endif
 
       eof = 0
@@ -101,7 +99,7 @@
 
 #ifdef SHM_IO
 #undef  read(x,y  )
-#define read(x,y,z) k=k+1; READ(dataSHM(startGW(k):endGW(k)),y,z)
+#define read(x,y,z) k=k+1; READ(dataGW(startGW(k):endGW(k)),y,z)
 #endif
 
       read (110,*,iostat=eof) gwht(ihru)
