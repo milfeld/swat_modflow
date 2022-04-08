@@ -402,9 +402,9 @@
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          kk   =    kSUB
 #endif
-      print*, " 01 OPEN getallo.f subfile: ",subfile
+!     print*, " 01 OPEN getallo.f subfile: ",subfile   !! rmKFM
             open (25,file=data_sub//subfile)
-      print*, " 02 READ getallo.f subfile: ",subfile
+!     print*, " 02 READ getallo.f subfile: ",subfile   !! rmKFM
             do j = 1,52 
               read (25,6000) titldum
             end do
@@ -416,7 +416,7 @@
 #ifdef SHM_IO
             kSUB = kk
 #endif
-      print*, " 03 READ getallo.f subfile: ",subfile
+!     print*, " 03 READ getallo.f subfile: ",subfile    !! rm KFM
             call hruallo
 #ifdef SHM_IO
             kSUB = 0
@@ -427,7 +427,6 @@
 #ifndef SHM_IO
             close (25)
 #endif
-!        stop ' ^ STOPPED call hruallo'
 
           case (2)                      !! icd = 2  ROUTE command
             mch = mch + 1               !! # channels
@@ -476,7 +475,7 @@
           mhyd = Max(mhyd,iht)
 
         end if
-        print*," ^ CASE(",icd,")    knt= ",knt
+!       print*," ^ CASE(",icd,")    knt= ",knt  !! rm KFM
       end do  
       close (27)
       

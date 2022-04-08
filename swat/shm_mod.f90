@@ -240,8 +240,8 @@ integer ::  ish_no, Jndex, isbn
          write(*,'(" -> ERROR: SWAT File Type (",a,") have not been implemented yet.")') file_name(pt_ndx+1:pt_ndx+sufx_len)
          stop
       endif
-      print*," OOOOOOa file --> ", file," <-------"
-      print*," OOOOOOb file= ", file(pt_ndx+1:pt_ndx+sufx_len)
+   !  print*," OOOOOOa file --> ", file," <-------"             !rmKFM
+   !  print*," OOOOOOb file= ", file(pt_ndx+1:pt_ndx+sufx_len)  !rmKFM
 
       select case( file(pt_ndx+1:pt_ndx+sufx_len) )
       case ("chm"); 

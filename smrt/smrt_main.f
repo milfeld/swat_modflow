@@ -19,7 +19,7 @@
 #ifdef SHM_IO
         print*," v shm_init"
         call shm_init()
-        print*," ^ shm_init"
+        print*," ^ FINISHED shm_init"
 !       type=12
 !       do isbn=1,1277
 !         ish_no=MAX_HRU*isbn+1 !??????????? 1 based

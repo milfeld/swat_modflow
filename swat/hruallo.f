@@ -96,11 +96,11 @@
 #     define read(x,y,z) kk=kk+1; READ(dataSUB(startSUB(kk):endSUB(kk)),y,iostat=eof)
 #endif
       read (25,5300,iostat=eof)hrufile, mgtfile, solfile, chmfile, ilnds
-      !KM print*,"hrufile= ",hrufile
-      !KM print*,"mgtfile= ",mgtfile
-      !KM print*,"solfile= ",solfile
-      !KM print*,"chmfile= ",chmfile
-      !KM print*,"ilnds  = ",ilnds
+      !rm KFM print*,"hrufile= ",hrufile
+      !rm KFM print*,"mgtfile= ",mgtfile
+      !rm KFM print*,"solfile= ",solfile
+      !rm KFM print*,"chmfile= ",chmfile
+      !rm KFM print*,"ilnds  = ",ilnds
 
       if (eof < 0) return
       if (ilnds > 0) then 
@@ -118,7 +118,7 @@
 
 !!km    open (9,file=data_swat//solfile,recl=350)
         open (9,file=data_sol//solfile)         !!kfm removed recl=350
-      print*," ^ open solfile in hruallo: ",solfile
+!     print*," ^ open solfile in hruallo: ",solfile  !! rm KFM
         !! calculate # of soil layers in profile
           depth = 0.
           lyrtot = 0
