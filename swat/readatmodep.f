@@ -36,9 +36,9 @@
 
 !!    Atmosperic deposition filename present in file.cio
       if (atmofile /= '             ') then
-        open (127,file=data_swat//atmofile)
+        open (1111,file=data_swat//atmofile)
           do iii = 1, 5
-            read (127,5101) titldum
+            read (1111,5101) titldum
           end do
        if (iatmodep == 0) then
           do isub = 1, subtot

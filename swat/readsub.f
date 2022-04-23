@@ -302,6 +302,7 @@
           open (108,file=data_hru//hrufile)
           open (109,file=data_mgt//mgtfile)
           open (110,file=data_gw//gwfile)
+
           call readhru
           call readchm
           call readmgt
@@ -483,7 +484,6 @@
 #ifndef SHM_IO
       close (101)
 #endif
-
       return
  1000 format ('ERROR: Elevation Band Fractions in Subbasin ',i4,        
      &        ' do not add up to 100% of subbasin area!')

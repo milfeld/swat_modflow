@@ -105,12 +105,14 @@ C     Get the name of the name file
 
 C     Open name file
       FNAME = 'modflow.mfn' !this is required
-      OPEN (UNIT=INUNIT,FILE=data_out//FNAME,
+
+      OPEN (UNIT=INUNIT,FILE=data_mflow//FNAME,
      &      STATUS='OLD',ACTION=ACTION(1))
       NC=INDEX(FNAME,' ')
       WRITE(*,490)' Using NAME file: ',FNAME(1:NC)
       print *  !rtb
   490 FORMAT(A,A)
+
 
 C     Get current date and time, assign to IBDT, and write to screen
       CALL DATE_AND_TIME(VALUES=IBDT)
@@ -120,6 +122,7 @@ C     Allocate and read (BAS,DIS files)
       NSOL=1
       CALL GWF2BAS7AR(INUNIT,VERSION,24,31,32,MAXUNIT,IGRID,12,
      &                HEADNG,26,MFVNAM)
+
       IF(IUNIT(50).GT.0 .AND. IUNIT(52).GT.0) THEN
         WRITE(IOUT,'(1X,/,1X,A)')
      &  'MNW1 and MNW2 cannot both be active in the same simulation'

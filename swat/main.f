@@ -68,28 +68,52 @@
 !!km  call get_io_dirs()  
 !! process input
 		
+      print*, '           v BEGIN   getallo'
       call getallo
-      stop ' ^ STOPPED getallo'
+      print*, '           v BEGIN   allocate_parms'
       call allocate_parms
+      print*, '           v BEGIN   readfile'
       call readfile
+      print*, '           v BEGIN   readbsn'
       call readbsn
+      print*, '           v BEGIN   readwwq'
       call readwwq
+      print*, '           v BEGIN   readfcst'
       if (fcstyr > 0 .and. fcstday > 0) call readfcst
+      print*, '           v BEGIN   readplant'
       call readplant             !! read in the landuse/landcover database
+      print*, '           v BEGIN   readtill'
       call readtill              !! read in the tillage database
+      print*, '           v BEGIN   readpest'
       call readpest              !! read in the pesticide database
+      print*, '           v BEGIN   readfert'
       call readfert              !! read in the fertilizer/nutrient database
+      print*, '           v BEGIN   readurban'
       call readurban             !! read in the urban land types database
+      print*, '           v BEGIN   readseptwq'
       call readseptwq            !! read in the septic types database     
+      print*, '           v BEGIN   readlup'
       call readlup
+      print*, '           v BEGIN   readfig'
       call readfig
+      print*, '           v BEGIN   readatmodep'
       call readatmodep
+      print*, '           v BEGIN   readsmrt_init_mf'
+     
+      print*, '           v BEGIN   smrt_init_mf',mf_active
       if(mf_active) call smrt_init_mf !rtb MODFLOW
+
+      print*, '           v BEGIN   readinpt'
       call readinpt
+      print*, '           v BEGIN   readstd1'
       call std1
+      print*, '           v BEGIN   readstd2'
       call std2
+      print*, '           v BEGIN   readopenwth'
       call openwth
+      print*, '           v BEGIN   readheadout'
       call headout
+      print*, '           ^   END   reading inputs'
 
       !! convert integer to string for output.mgt file
       subnum = ""

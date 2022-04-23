@@ -378,7 +378,7 @@
 
 #ifdef SHM_IO
 #undef  read(x,y  )
-#define read(x,y,z) k=k+1; READ(dataMGT(startMGT(k):endMGT(k)),y,z)
+#define read(x,y,z) kk=kk+1; READ(dataMGT(startMGT(kk):endMGT(kk)),y,z)
 #endif
 
 !!    set pothole trigger
@@ -456,6 +456,7 @@
 !!      if (nrot(ihru) > 0) then
         mgt_opprev = 0
 !!      read scheduled management practices
+
         do                                      !! operation loop
           mon = 0
           day = 0
@@ -471,8 +472,11 @@
           mgt7 = 0.
           mgt8 = 0.
           mgt9 = 0.
+          mgt10i=0
+
           read (109,5200,iostat=eof) mon, day, husc, mgt_op, mgt1i,     
      &          mgt2i, mgt3i, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, mgt10i
+
           iff (eof < 0) then
             if (mgt_opprev /= 17 .and. mgt_opprev /= 0) then
               iop = iop + 1
@@ -496,7 +500,6 @@
               if(cobb_model.eq.1) then
                 goto 4199
               endif
-
               return
           endif
           if (mgt_opprev == 17 .and. mgt_op == 0) then
@@ -580,18 +583,21 @@
 	  end if                                            !! mgt_op if        
 		nopmx(ihru) = nopmx(ihru) + 1
         end do                                  !! operation loop
+!!K     print*,"  END DO END"
 !!    add a skip command to the end of every rotation
 !!        iop = iop + 1
 !!        mgtop(iop,ihru) = 17
 !!        idop(iop,ihru) = idop(iop - 1, ihru)
 !!        phu_op(iop,ihru) = phu_op(iop-1,ihru)    
 !!     endif  
-      close (109)
+
+#ifndef SHM_IO
+              close (109)
+#endif
      
       if(auto_yes.eq.1) then
         write(100009,*) ihru
       endif
-
 
  4199 if(cobb_model.eq.1) then
       if(ihru.gt.98) then
@@ -646,10 +652,20 @@
 
       endif
       endif
-      
 
       return
- 5000 format (a)
+      
+ 5000 format (a80)
+ 5300 format (7x,            f9.3,1x,i2,1x,i4,1x,i3,1x,i2,1x,f12.5,1x,  
+     &        f6.2,1x,f11.5,1x,f4.2,1x,f6.2,1x,f5.2)
+
+#ifdef FORMAT5200
+!     Fix for missaligned  WABASH data. f8.3->f9.3
+ 5200 format (1x,i2,1x,i2,1x,f9.3,1x,i2,1x,i4,1x,i3,1x,i2,1x,f12.5,1x,  
+     &        f6.2,1x,f11.5,1x,f4.2,1x,f6.2,1x,f5.2,i12)
+#else
  5200 format (1x,i2,1x,i2,1x,f8.3,1x,i2,1x,i4,1x,i3,1x,i2,1x,f12.5,1x,  
      &        f6.2,1x,f11.5,1x,f4.2,1x,f6.2,1x,f5.2,i12)
+#endif
+      return
       end

@@ -5,8 +5,8 @@ PROJ_NAME=SWAT_MODFLOW_rel64
 
 #CC=gcc
 #FC=gfortran
-
- IO = -DSHM_IO  -fpp  #comment this line for standard (POSIX) IO
+#                FORMAT5200 (special 5200 format in readmgt.f for reading WABASH opts)
+ IO = -DSHM_IO -DFORMAT5200  -fpp  #comment this line for standard (POSIX) IO
 
  NO_DIAG="-diag-disable 8291,10006"
 

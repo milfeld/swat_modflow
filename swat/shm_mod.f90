@@ -237,11 +237,9 @@ integer ::  ish_no, Jndex, isbn
       file_name = trim(file_name)//C_NULL_CHAR    !put \0 for C call
 
       if( file(pt_ndx+1:pt_ndx+sufx_len) == "sno" .or.  file(pt_ndx+1:pt_ndx+sufx_len) == "ops" ) then
-         write(*,'(" -> ERROR: SWAT File Type (",a,") have not been implemented yet.")') file_name(pt_ndx+1:pt_ndx+sufx_len)
+         write(*,'(" -> ERROR: SWAT File Type (",a,") has not been implemented yet.")') file_name(pt_ndx+1:pt_ndx+sufx_len)
          stop
       endif
-   !  print*," OOOOOOa file --> ", file," <-------"             !rmKFM
-   !  print*," OOOOOOb file= ", file(pt_ndx+1:pt_ndx+sufx_len)  !rmKFM
 
       select case( file(pt_ndx+1:pt_ndx+sufx_len) )
       case ("chm"); 
@@ -312,23 +310,9 @@ integer ::  ish_no, Jndex, isbn
 
       case ("sub"); 
                  typeF=12
- if(typeF == 120) then
- print*," v case 12"
-       do isbn=1,1277
-         ish_no=MAX_HRU*isbn+1 !??????????? 1 based
-         Jndex= Offndx(ish_no,typeF)+1
-         write(*,'( "Aitpef= 12, isbn= ",i5,"  sh_no= ",i6,"   OFFNDX= ",i5,"       Offset=",i8 )') &
-                                 isbn,        ish_no,       offndx(ish_no,typeF), offset(Jndex,typeF)
-      enddo
- print*," ^ case 12 write offndx offset",file, file_name
- endif 
-
                  cptrSUB = get_file_data(shm_data_ptr(12), offset(1,typeF), offndx(1,typeF), file_name,startSUB,   endSUB, line_cnt, type_no)
                  call c_f_pointer(cptrSUB, dataSUB); kSUB=0
                  if(prSUB) then;  do i=1,line_cnt; write(*,'(" >>",i4," ", a)') i,dataSUB(startSUB(i):endSUB(i)); end do; endif
- !print*," ^ case 12 get_file_data"
-                 if(prSUB) then;  do i=1,line_cnt; write(*,'(i4," ",i5," - ",i5)')i,startSUB(i),endSUB(i); end do; endif
- !print*," ^ case 12 write startSUB,endSUB prSUB"
 
       case ("swq"); 
                  typeF=13

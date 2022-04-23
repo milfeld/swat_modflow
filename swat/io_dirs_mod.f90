@@ -97,7 +97,7 @@ contains
    swat_data_dir(1:length)=dir(1:length)              !avoids using trim in open stmnt
 
    allocate(character(len=length+9) :: data_chm); data_chm(1:length+9)=dir(1:length)//"data_chm/"
-   allocate(character(len=length+9) :: data_gw ); data_gw( 1:length+8)=dir(1:length)//"data_gw/"
+   allocate(character(len=length+8) :: data_gw ); data_gw( 1:length+8)=dir(1:length)//"data_gw/"
    allocate(character(len=length+9) :: data_hru); data_hru(1:length+9)=dir(1:length)//"data_hru/"
    allocate(character(len=length+9) :: data_lwq); data_lwq(1:length+9)=dir(1:length)//"data_lwq/"
    allocate(character(len=length+9) :: data_mgt); data_mgt(1:length+9)=dir(1:length)//"data_mgt/"

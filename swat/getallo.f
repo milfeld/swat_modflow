@@ -377,9 +377,8 @@
       pstflg = 0
       mhru1 = 1
       open (27,file=data_swat//figfile)
-      knt=0   !KFM counter
+
       do while (icd > 0)
-      knt=knt+1   !KFM counter
         read (27,5002) a
         if (a /= "*") then
           backspace 27
@@ -395,16 +394,14 @@
             read (27,6100) subfile
             call caps(subfile)
 
-
 #ifdef SHM_IO
 #     define open(x,y) call shm_open(y)
 #     define read(x,y) kk=kk+1; READ( dataSUB(startSUB(kk):endSUB(kk)),y )
       shm_eof = achar(28)  ! ANSII FS (File Separator)
          kk   =    kSUB
 #endif
-!     print*, " 01 OPEN getallo.f subfile: ",subfile   !! rmKFM
             open (25,file=data_sub//subfile)
-!     print*, " 02 READ getallo.f subfile: ",subfile   !! rmKFM
+
             do j = 1,52 
               read (25,6000) titldum
             end do
@@ -416,8 +413,10 @@
 #ifdef SHM_IO
             kSUB = kk
 #endif
-!     print*, " 03 READ getallo.f subfile: ",subfile    !! rm KFM
+
             call hruallo
+
+
 #ifdef SHM_IO
             kSUB = 0
 #endif
@@ -475,7 +474,7 @@
           mhyd = Max(mhyd,iht)
 
         end if
-!       print*," ^ CASE(",icd,")    knt= ",knt  !! rm KFM
+
       end do  
       close (27)
       
