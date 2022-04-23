@@ -1,0 +1,31 @@
+#!/bin/bash
+
+
+# create shared memory files in /dev/shm
+#  Organize Files:
+#    o Create a directory where files reside ($SWAT_DATA)
+#    o Put numbered files of systax (#.<type>)  into: 
+#                            data_<type> directories
+#    o The input files for:        swat,      smrt,        modflow, put in
+#                   put in:   data_swat, data_swatmf, data_mflow 
+#    o create output dir:     data_out 
+
+#  If all the files are initially in a single directory, use 
+#
+#      file_sorter
+
+# Edit shared_mem.h and substitute /scratch.../Data with $SWAT_DATA.
+#   char  *Data_dir            = "/scratch/00770/milfeld/SWAT_DATA/TEST18/";
+#   char  *Data_info_file      = "/scratch/00770/milfeld/SWAT_DATA/TEST18/dir_info";
+
+      make
+      write_shm
+
+# swat_* Files will be created in /dev/shm 
+# Copy these immediately to a safe directory. 
+# If the files are removed from /dev/shm (by logging out, etc.)
+# You can simply copy them back in 2 or 3 seconds with 
+#
+#     cp swat_* /dev/shm
+#
+# It is that simple.
