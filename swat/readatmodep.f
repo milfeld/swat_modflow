@@ -42,20 +42,20 @@
           end do
        if (iatmodep == 0) then
           do isub = 1, subtot
-            read (127,1000,iostat=eof) rammo_sub(isub), rcn_sub(isub),  
+            read (1111,1000,iostat=eof) rammo_sub(isub), rcn_sub(isub),  
      &        drydep_nh4(isub), drydep_no3(isub)
             if (eof < 0) exit
           end do
           else
-            read (127,1001,iostat=eof) mo_atmo1, iyr_atmo1
+            read (1111,1001,iostat=eof) mo_atmo1, iyr_atmo1
 1001        format (2i6)
             iii = 0
             momax = 12 * nbyr
             do iii = 1, msub
-              read (127,1002) (rammo_mo(imo,iii),imo = 1,momax)  
-              read (127,1002) (rcn_mo(imo,iii), imo = 1,momax)
-              read (127,1002) (drydep_nh4_mo(imo,iii), imo = 1, momax)
-              read (127,1002) (drydep_no3_mo(imo,iii), imo = 1,momax)
+              read (1111,1002) (rammo_mo(imo,iii),imo = 1,momax)  
+              read (1111,1002) (rcn_mo(imo,iii), imo = 1,momax)
+              read (1111,1002) (drydep_nh4_mo(imo,iii), imo = 1, momax)
+              read (1111,1002) (drydep_no3_mo(imo,iii), imo = 1,momax)
 1002          format (600f10.3)
             end do
        endif
