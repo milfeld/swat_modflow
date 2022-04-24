@@ -41,33 +41,6 @@ const char * file_suffixes[]={"chm",   "gw", "hru","lwq", "mgt","pnd","res","rte
 // HRU_MAX                       64      64    64     1     64     1     1     1     64     64     64      1     1     1     1 
 // SBN_MAX=1276 (all)except                        1261               1261
 //    No of files            {34535,  34534, 34534,   19, 34534, 1276,   19, 1276, 34534, 34534, 34534,  1276, 1276, 1276, 1276  };
-//int   type_file_ct[N_TYPES];
-//long  type_data_sz[N_TYPES];
-
-//char  *Directory            = "/scratch/00770/milfeld/SWAT/HRU/Data/";
-//char  *Directory            = "/scratch/00770/milfeld/Data/";
-//char  *Directory_info_file  = "/scratch/00770/milfeld/Data/dir_info";
-
-// commented out 12/30/2021
-//char  *Data_dir            = "/scratch/00770/milfeld/SWAT2/modeldata/Wabash/Data/";
-//char  *Data_info_file      = "/scratch/00770/milfeld/SWAT2/modeldata/Wabash/Data/dir_info";
-
-  char  *Data_dir            = "/scratch/00770/milfeld/SWAT_DATA/TEST18/";
-  char  *Data_info_file      = "/scratch/00770/milfeld/SWAT_DATA/TEST18/dir_info";
-
-//char  *Data_dir            = "/scratch/00770/milfeld/SWAT2/modeldata/Wabash/Data.chm/";
-//char  *Data_info_file      = "/scratch/00770/milfeld/SWAT2/modeldata/Wabash/Data.chm/dir_info";
-
-//char  *Data_dir            = "/scratch/00770/milfeld/Data3/";
-//char  *Data_info_file      = "/scratch/00770/milfeld/Data3/dir_info";
-//char  *Data_dir            = "/scratch/00770/milfeld/SWAT15/modeldata/Wabash/Data";
-//char  *Data_info_file      = "/scratch/00770/milfeld/SWAT15/modeldata/Wabash/Data/dir_info";
-
-//char  *Data_dir            = "/scratch/00770/milfeld/KENT/modeldata/TxtInOut_Wabash/Data/";
-//char  *Data_info_file      = "/scratch/00770/milfeld/KENT/modeldata/TxtInOut_Wabash/Data/dir_info";
-//char  *Data_dir            = "/home1/00770/milfeld/IO/GEN10/TEST/";
-//char  *Data_info_file      = "/home1/00770/milfeld/IO/GEN10/TEST/dir_info";
-//                               directory   MUST END IN   "/"
 
 int c_verbose;
 

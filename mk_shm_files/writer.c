@@ -10,6 +10,7 @@
 #include "shared_mem.h"
 
 #include <omp.h>
+#include <assert.h>
 
 #define SWAT_DEBUG_READ_FILE_NAMES 0
 #define SWAT_DEBUG_WRITE_DATA 0
@@ -18,9 +19,19 @@
 double gtod_timer();
 void get_fn_cmd(char *fn_cmd, char *Data_dir, const char *suffix);
 
-int main(void){
+int main(int argc, char *argv[], char * envp[]){
+
 
   double t0, t1;
+
+  //------------------------------------ Data Directory
+  char *dir_name;
+  char *Data_dir=NULL; 
+  char *Data_info_file=NULL;
+  char info_file[]="dir_info";
+  int  nchars=0;
+  //--------------------------------------------------
+
 
   //------------------------------------ file metadata
   int  file_cnt;
@@ -48,6 +59,37 @@ int main(void){
      for(int i=0; i<ndx_size; i++) Offndx[j][i] =(long)-1;
      for(int i=0; i<set_size; i++) Offset[j][i] =(long) 0;
   }
+
+  //v=========================================================
+    // GET DATA DIRECTORY NAME
+  
+    if( argc == 2 ){ dir_name = argv[1]; }  // try picking up SWAT data dir. from cmd line.
+  
+    if(dir_name != NULL) {
+       printf(" -> Using Cmd Line arg \"%s\" for SWAT data dir.\n",argv[1]);}
+  
+    else{                                  // else see if path is on command line
+       if( (dir_name = getenv("SWAT_DATA")) != NULL ){
+            printf(" -> Using SWAT_DATA (%s) for SWAT data directory\n",dir_name); }
+  
+       else{                              // If not in SWAT_DATA or cmd line, abort.
+         printf(" ->ERROR: SWAT data directory is unknown.\n"); 
+         printf(" ->       Either set it in SWAT_DATA env., or put path in cmd line.\n\n");
+         assert( 0 );
+       }   
+    }
+  
+    while( dir_name[nchars] != '\0' ) nchars++;
+
+    Data_dir=(char *)malloc(sizeof(char)*(nchars+2) );   //Data_dir ends with "/"
+    strcat(Data_dir,dir_name);
+    strcat(Data_dir,"/" );
+  
+    Data_info_file=(char *)malloc(sizeof(char)*(nchars+1+sizeof(info_file)+1) );
+    strcat(Data_info_file,Data_dir);
+    strcat(Data_info_file,info_file );
+  
+  //^=========================================================
 
   //v=========================================================
     file_cnt=                                                \
