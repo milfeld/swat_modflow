@@ -17,7 +17,7 @@ PROJ_NAME=SWAT_MODFLOW_rel64
  LONGFREE=-ffree-line-length-200
    ARCH64=-m64
 
-#MOD_SRC=$(shell find swat smrt modflow rt3d -name '*mod.f*' -exec basename {} \; ) # Find all module (...mod.f*) files
+#MOD_SRC=$(shell find . -name '*mod.f*' -exec basename {} \; ) # Find all module (...mod.f*) files
 #MOD_TMP=$(patsubst %.f,   %.o, $(MOD_SRC))                    # .f   -> .o
 #MOD_OBJ=$(patsubst %.f90, %.o, $(MOD_TMP))                    # .f90 -> .o
 

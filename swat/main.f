@@ -114,6 +114,7 @@
       print*, '           v BEGIN   readheadout'
       call headout
       print*, '           ^   END   reading inputs'
+      stop "STOPPED AFTER INPUTS"
 
       !! convert integer to string for output.mgt file
       subnum = ""

@@ -207,8 +207,6 @@
               i = inum1s(idum)
               subed(ihouts(idum)) = inum4s(idum)
               open (101,file=data_sub//subfile)
-              print*,"                   SUBFILEEEEEEEEEEEEE"
-              stop
               call readsub
               nhru = nhru + hrutot(i)
 
