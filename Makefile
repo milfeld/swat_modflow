@@ -17,16 +17,16 @@ PROJ_NAME=SWAT_MODFLOW_rel64
  LONGFREE=-ffree-line-length-200
    ARCH64=-m64
 
-#MOD_SRC=$(shell find . -name '*mod.f*' -exec basename {} \; ) # Find all module (...mod.f*) files
+#MOD_SRC=$(shell find swat smrt modflow rt3d -name '*mod.f*' -exec basename {} \; ) # Find all module (...mod.f*) files
 #MOD_TMP=$(patsubst %.f,   %.o, $(MOD_SRC))                    # .f   -> .o
 #MOD_OBJ=$(patsubst %.f90, %.o, $(MOD_TMP))                    # .f90 -> .o
 
 #SRC=$(shell find . -name '*.f*' -exec basename {} \; | grep -v 'mod.f' ) # All *.f* files (non *mod.f*)
- SRC=$(shell find . -name '*.f*' -exec basename {} \; ) # All *.f* files (non *mod.f*)
+ SRC=$(shell find swat smrt modflow rt3d -name '*.f*' -exec basename {} \; ) # All *.f* files (non *mod.f*)
  TMP=$(patsubst %.f,   %.o, $(SRC))                                       # .f   -> .o
  OBJ=$(patsubst %.f90, %.o, $(TMP))                                       # .f90 -> .o
 
- C_SRC=$(shell find . -name '*.c' -exec basename {} \; ) # All C files (.c)
+ C_SRC=$(shell find swat smrt modflow rt3d -name '*.c' -exec basename {} \; ) # All C files (.c)
  C_OBJ=$(patsubst %.c, %.o, $(C_SRC))
 
  VPATH = swat:smrt:modflow:rt3d
