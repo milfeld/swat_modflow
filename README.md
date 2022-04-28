@@ -3,7 +3,7 @@
 * The 250K files have been "pre-processed" into 15 shared-memory files with the names swat_data_<type>.  There are also 15 swat_meta_<type> files.  (These are in the dev_shm.tar on Stampede -- they are too big for gitHub.)
 * These shm files can be created from the original dataset by making the write_shm executable (execute make in the mk_shm_files directory).  Set SWAT_DATA to the path for the data directory.  In the data directory have a subdirectory for each type of data, named "data_<type>" with the #########.<type> files (e.g. data_sol will have all the #########.sol files, etc.).  Then execute write_shm. (The preprocessed files are used below.)
 * In the test below, a Fortran stop statement halts execution after reading the initial numbered data sets.  Comment out the stop (in main.f) for performing the simulation.
-  ** Kent Milfeld  4/27/2022
+  **  Kent Milfeld  4/27/2022
 
 ```
 #!/bin/sh
