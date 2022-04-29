@@ -7,16 +7,20 @@
 
 ```
 #!/bin/sh
+# It is convenient to build and test on a skylake node, with idev.
+# If you want to start over, just removed SWAT and SWAT_DATA directories.
+
+idev -p skx-dev -m 60      #skylake development node, 60 minutes.
 
 #            Reset to the default Intel compiler.
 ml intel
 
 #            Make working directories for SWAT BUILD & DATA
 cd $SCRATCH
-mkdir TEST_SWAT TEST_SWAT_DATA
+mkdir SWAT SWAT_DATA
 
 #            Go to BUILD dir.   Clone swat_modflow.
-cd TEST_SWAT
+cd SWAT
 git clone https://github.com/milfeld/swat_modflow
 
 #            Get the SHM files, and put them in /dev/shm
@@ -57,7 +61,7 @@ source sourceme_in_swat_home
 #            They are in data_swat data_swatmf, and data_mflow.
 #            Also makes data_out.
 
-cd $SCRATCH/TEST_SWAT_DATA
+cd $SCRATCH/SWAT_DATA
 tar -xvf /scratch/00770/milfeld/SWAT_DATA/data_dir.tar
 
 #            This sets environment variables SWAT_DATA and SWAT_OUTPUT
